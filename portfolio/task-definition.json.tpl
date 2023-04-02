@@ -1,10 +1,10 @@
 [
 	{
-		"name": "worker",
+		"name": "${CONTAINER}",
 		"essential": true,
 		"memory": 512,
 		"cpu": 256,
-		"image": "${IMAGENAME}:latest",
+		"image": "${IMAGE}:latest",
 		"environment": [],
 		"portMappings": [
 			{
