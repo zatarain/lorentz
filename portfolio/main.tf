@@ -46,11 +46,12 @@ resource "aws_iam_role_policy_attachment" "task-runner-policy" {
 }
 
 resource "aws_ecs_service" "api" {
-  name            = "${var.prefix}-api"                 # Naming our first service
-  cluster         = aws_ecs_cluster.portfolio.id        # Referencing our created Cluster
-  task_definition = aws_ecs_task_definition.api-run.arn # Referencing the task our service will spin up
-  launch_type     = "FARGATE"
-  desired_count   = 3 # Number of deployed containers
+  name                   = "${var.prefix}-api"                 # Naming our first service
+  cluster                = aws_ecs_cluster.portfolio.id        # Referencing our created Cluster
+  task_definition        = aws_ecs_task_definition.api-run.arn # Referencing the task our service will spin up
+  launch_type            = "FARGATE"
+  desired_count          = 3 # Number of deployed containers
+  enable_execute_command = true
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn # Referencing our target group
