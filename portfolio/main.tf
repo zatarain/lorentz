@@ -60,9 +60,9 @@ resource "aws_ecs_service" "api" {
 
   network_configuration {
     subnets = [
-      "${aws_default_subnet.default_subnet_a.id}",
-      "${aws_default_subnet.default_subnet_b.id}",
-      "${aws_default_subnet.default_subnet_c.id}",
+      aws_default_subnet.default_subnet_a.id,
+      aws_default_subnet.default_subnet_b.id,
+      aws_default_subnet.default_subnet_c.id,
     ]
     assign_public_ip = true # Providing our containers with public IPs
   }
@@ -74,7 +74,9 @@ resource "aws_security_group" "service_security_group" {
     to_port   = 0
     protocol  = "-1"
     # Only allowing traffic in from the load balancer security group
-    security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+    security_groups = [
+      aws_security_group.load_balancer_security_group.id,
+    ]
   }
 
   egress {
