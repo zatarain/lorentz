@@ -57,37 +57,6 @@ data "aws_iam_policy_document" "command-executor" {
   }
 }
 
-/**
-data "aws_iam_policy_document" "command-executor" {
-  statement {
-    actions = [
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "logs:DescribeLogGroups",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "logs:CreateLogStream",
-      "logs:DescribeLogStreams",
-      "logs:PutLogEvents",
-    ]
-    resources = [
-      "${aws_ecs_cluster.portfolio.arn}:*"
-    ]
-  }
-}
-/**/
 resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   role       = aws_iam_role.task-command-executor.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -103,11 +72,11 @@ resource "aws_ecs_service" "api" {
   cluster                = aws_ecs_cluster.portfolio.id        # Referencing our created Cluster
   task_definition        = aws_ecs_task_definition.api-run.arn # Referencing the task our service will spin up
   launch_type            = "FARGATE"
-  desired_count          = 3 # Number of deployed containers
   enable_execute_command = true
+  desired_count          = 2 # Number of deployed containers
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.target_group.arn # Referencing our target group
+    target_group_arn = aws_lb_target_group.workers.arn # Referencing our target group
     container_name   = aws_ecs_task_definition.api-run.family
     container_port   = 3000 # Specifying the container port
   }
@@ -118,18 +87,24 @@ resource "aws_ecs_service" "api" {
       aws_default_subnet.default_subnet_b.id,
       aws_default_subnet.default_subnet_c.id,
     ]
-    assign_public_ip = true # Providing our containers with public IPs
+    # Providing our containers with public IPs
+    assign_public_ip = true
+    # Setting the security group
+    security_groups = [
+      aws_security_group.api-access.id,
+    ]
   }
 }
 
-resource "aws_security_group" "service_security_group" {
+resource "aws_security_group" "api-access" {
   ingress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
+
     # Only allowing traffic in from the load balancer security group
     security_groups = [
-      aws_security_group.load_balancer_security_group.id,
+      aws_security_group.alb-entry-point-access.id,
     ]
   }
 
