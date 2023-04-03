@@ -19,8 +19,8 @@ resource "aws_ecs_task_definition" "api-run" {
   container_definitions    = data.template_file.task-definition-template.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 2048        # Specifying the memory our container requires
-  cpu                      = 1024        # Specifying the CPU our container requires
+  memory                   = 512         # Specifying the memory our container requires
+  cpu                      = 256         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.task-runner.arn
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }
@@ -39,6 +39,11 @@ data "aws_iam_policy_document" "assume_role_policy" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
+
+resource "aws_iam_role_policy_attachment" "task-runner-policy" {
+  role       = aws_iam_role.task-runner.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "task-command-executor" {
@@ -62,34 +67,31 @@ resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "task-runner-policy" {
-  role       = aws_iam_role.task-runner.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
 resource "aws_ecs_service" "api" {
-  name                   = "${var.prefix}-api"                 # Naming our first service
-  cluster                = aws_ecs_cluster.portfolio.id        # Referencing our created Cluster
-  task_definition        = aws_ecs_task_definition.api-run.arn # Referencing the task our service will spin up
+  name    = "${var.prefix}-api"
+  cluster = aws_ecs_cluster.portfolio.id
+
+  # Referencing the task our service will spin up
+  task_definition        = aws_ecs_task_definition.api-run.arn
   launch_type            = "FARGATE"
   enable_execute_command = true
-  desired_count          = 2 # Number of deployed containers
+  desired_count          = 2
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.workers.arn # Referencing our target group
+    target_group_arn = aws_lb_target_group.workers.arn
     container_name   = aws_ecs_task_definition.api-run.family
-    container_port   = 3000 # Specifying the container port
+    container_port   = 3000
   }
 
   network_configuration {
+    assign_public_ip = true
+
     subnets = [
       aws_default_subnet.default_subnet_a.id,
       aws_default_subnet.default_subnet_b.id,
       aws_default_subnet.default_subnet_c.id,
     ]
-    # Providing our containers with public IPs
-    assign_public_ip = true
-    # Setting the security group
+
     security_groups = [
       aws_security_group.api-access.id,
     ]
