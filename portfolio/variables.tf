@@ -5,7 +5,7 @@ variable "name" {
 
 variable "prefix" {
   type    = string
-  default = "xm"
+  default = "pt"
 }
 
 variable "repository" {

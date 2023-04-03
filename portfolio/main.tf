@@ -22,6 +22,7 @@ resource "aws_ecs_task_definition" "api-run" {
   memory                   = 2048        # Specifying the memory our container requires
   cpu                      = 1024        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.task-runner.arn
+  task_role_arn            = aws_iam_role.task-command-executor.arn
 }
 
 resource "aws_iam_role" "task-runner" {
@@ -38,6 +39,58 @@ data "aws_iam_policy_document" "assume_role_policy" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
+
+resource "aws_iam_role" "task-command-executor" {
+  name               = "${var.prefix}-task-command-executor"
+  assume_role_policy = data.aws_iam_policy_document.command-executor.json
+}
+
+data "aws_iam_policy_document" "command-executor" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+/**
+data "aws_iam_policy_document" "command-executor" {
+  statement {
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "logs:DescribeLogGroups",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_ecs_cluster.portfolio.arn}:*"
+    ]
+  }
+}
+/**/
+resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
+  role       = aws_iam_role.task-command-executor.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy_attachment" "task-runner-policy" {
