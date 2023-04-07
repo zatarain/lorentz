@@ -5,12 +5,11 @@ resource "aws_route53_delegation_set" "dns" {
 resource "aws_route53domains_registered_domain" "lattephp-net" {
   domain_name = "lattephp.net"
 
-  name_server {
-    name = aws_route53_delegation_set.dns.name_servers[0]
-  }
-
-  name_server {
-    name = aws_route53_delegation_set.dns.name_servers[1]
+  dynamic "name_server" {
+    for_each = toset(aws_route53_delegation_set.dns.name_servers)
+    content {
+      name = name_server.value
+    }
   }
 }
 
