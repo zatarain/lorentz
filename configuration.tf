@@ -8,6 +8,7 @@ locals {
       sdlc = {
         users = ["github"]
         roles = []
+        hub   = "lorentz"
       }
     })
   })
@@ -15,11 +16,12 @@ locals {
   environments = jsonencode({
     state = {
       name   = "lorentz-${terraform.workspace}"
-      bucket = "" # lorentz-${terraform.workspace}-state
+      bucket = ""
     }
     sdlc = {
       users = []
       roles = ["github"]
+      hub   = "lorentz"
     }
   })
 

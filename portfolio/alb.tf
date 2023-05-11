@@ -3,11 +3,7 @@ resource "aws_alb" "portfolio" {
   load_balancer_type = "application"
 
   # Referencing the default subnets
-  subnets = [
-    aws_default_subnet.default_subnet_a.id,
-    aws_default_subnet.default_subnet_b.id,
-    aws_default_subnet.default_subnet_c.id,
-  ]
+  subnets = var.subnets
   # Referencing the security group
   security_groups = [
     aws_security_group.alb-entry-point-access.id,
@@ -36,7 +32,7 @@ resource "aws_lb_target_group" "workers" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = aws_default_vpc.default_vpc.id # Referencing the default VPC
+  vpc_id      = var.vpc_id # Referencing the default VPC
 
   health_check {
     matcher = "200,301,302"

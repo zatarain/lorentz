@@ -1,11 +1,11 @@
 variable "aws_root_id" {
-  type = string
-	sensitive = true
+  type      = string
+  sensitive = true
 }
 
 variable "aws_env_id" {
-  type = string
-	sensitive = true
+  type      = string
+  sensitive = true
 }
 
 variable "aws_region" {

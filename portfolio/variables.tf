@@ -8,7 +8,23 @@ variable "prefix" {
   default = "pt"
 }
 
-variable "repository" {
-  type    = string
-  default = "hub"
+variable "hub" {
+  type = object({
+    repository_url = string
+  })
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "subnets" {
+  type = list(string)
+}
+
+variable "dns" {
+  type = object({
+    id           = string
+    name_servers = list(string)
+  })
 }

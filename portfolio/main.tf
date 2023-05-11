@@ -2,20 +2,23 @@ resource "aws_ecs_cluster" "portfolio" {
   name = var.name
 }
 
-resource "aws_ecr_repository" "hub" {
-  name = var.repository
+locals {
+  api_container = "${var.prefix}-api-run"
+  web_container = "${var.prefix}-web-run"
 }
 
 data "template_file" "task-definition-template" {
   template = file("${path.module}/task-definition.json.tpl")
   vars = {
-    CONTAINER = "${var.prefix}-api-run"
-    IMAGE     = replace(aws_ecr_repository.hub.repository_url, "https://", "")
+    CONTAINER = local.api_container
+    IMAGE     = replace(var.hub.repository_url, "https://", "")
+    TAG       = "latest"
+    PORT      = 3000
   }
 }
 
 resource "aws_ecs_task_definition" "api-run" {
-  family                   = "${var.prefix}-api-run" # Naming our first task
+  family                   = local.api_container # Naming our first task
   container_definitions    = data.template_file.task-definition-template.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
@@ -85,12 +88,7 @@ resource "aws_ecs_service" "api" {
 
   network_configuration {
     assign_public_ip = true
-
-    subnets = [
-      aws_default_subnet.default_subnet_a.id,
-      aws_default_subnet.default_subnet_b.id,
-      aws_default_subnet.default_subnet_c.id,
-    ]
+    subnets          = var.subnets
 
     security_groups = [
       aws_security_group.api-access.id,
