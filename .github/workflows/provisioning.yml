@@ -1,7 +1,7 @@
 name: Provisioning Main Infrastructure
 on:
   push:
-    branches: [main]
+    branches: [main, staging, development]
   pull_request:
     branches: [main]
     types: [opened, synchronize]
