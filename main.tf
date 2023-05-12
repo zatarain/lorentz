@@ -1,7 +1,7 @@
 
 resource "aws_ecr_repository" "hub" {
   for_each = toset(local.configuration.vpc)
-  name = local.configuration.sdlc.hub
+  name     = local.configuration.sdlc.hub
 }
 
 /**
