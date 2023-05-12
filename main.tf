@@ -1,10 +1,7 @@
 
 resource "aws_ecr_repository" "hub" {
+  for_each = toset(local.configuration.vpc)
   name = local.configuration.sdlc.hub
-}
-
-resource "aws_route53_delegation_set" "dns" {
-  reference_name = "Default Delegation Set"
 }
 
 /**

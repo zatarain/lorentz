@@ -1,4 +1,11 @@
 locals {
+  zone_prefix = tomap({
+    production  = ""
+    default     = ""
+    staging     = "test."
+    development = "beta."
+  })
+
   settings = tomap({
     default = jsonencode({
       state = {
@@ -8,8 +15,13 @@ locals {
       sdlc = {
         users = ["github"]
         roles = []
-        hub   = "lorentz"
+        hub   = ""
       }
+      dns = {
+        domains = ["zatara.in"]
+        zones   = []
+      }
+      vpc = []
     })
   })
 
@@ -21,8 +33,13 @@ locals {
     sdlc = {
       users = []
       roles = ["github"]
-      hub   = "lorentz"
+      hub   = terraform.workspace
     }
+    dns = {
+      domains = []
+      zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
+    }
+    vpc = [terraform.workspace]
   })
 
   configuration = jsondecode(lookup(local.settings, terraform.workspace, local.environments))

@@ -21,10 +21,3 @@ variable "vpc_id" {
 variable "subnets" {
   type = list(string)
 }
-
-variable "dns" {
-  type = object({
-    id           = string
-    name_servers = list(string)
-  })
-}
