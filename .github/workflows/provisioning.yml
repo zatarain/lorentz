@@ -1,0 +1,61 @@
+name: Provisioning Main Infrastructure
+on:
+  push:
+    branches: [main, staging, development]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  provisioning:
+    name: Terraform Provisioning
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_aws_root_id: ${{ secrets.TF_VAR_AWS_ROOT_ID }}
+      TF_VAR_aws_env_id: ${{ secrets.TF_VAR_AWS_ENV_ID }}
+      ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
+    steps:
+    - id: workspace
+      name: Terraform workspace based on branch name
+      run: |
+        name=default
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          name=production
+        elif [ "${{ github.ref_name }}" = "staging" ]; then
+          name="${{ github.ref_name }}"
+        else
+          name=development
+        fi
+        echo name=$name >> "$GITHUB_OUTPUT"
+        echo "Environment Name: $ENVIRONMENT_NAME"
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: '1.4.6'
+    - name: Lint check
+      run: terraform fmt -check
+    - name: Initialising back-end state
+      run: terraform init -backend-config back-end/default.tfvars
+    - name: Validation
+      run: terraform validate
+    - name: Planning in default workspace
+      run: terraform plan
+    - name: Select ${{ steps.workspace.outputs.name }} workspace
+      run: terraform workspace select ${{ steps.workspace.outputs.name }}
+    - name: Planning in ${{ steps.workspace.outputs.name }} workspace
+      run: terraform plan
+    - name: Applying on ${{ steps.workspace.outputs.name }} workspace
+      if: github.event_name == 'push'
+      run: terraform apply -auto-approve
+    - name: Applying on default workspace
+      if: github.event_name == 'push' && github.ref_name == 'main'
+      run: |
+        terraform workspace select default
+        terraform apply -auto-approve

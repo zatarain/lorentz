@@ -4,12 +4,12 @@
 		"essential": true,
 		"memory": 512,
 		"cpu": 256,
-		"image": "${IMAGE}:latest",
+		"image": "${IMAGE}:${TAG}",
 		"environment": [],
 		"portMappings": [
 			{
-				"containerPort": 3000,
-				"hostPort": 3000
+				"containerPort": $PORT,
+				"hostPort": $PORT
 			}
 		],
 		"linuxParameters": {
