@@ -21,10 +21,10 @@ jobs:
       name: Terraform workspace based on branch name
       run: |
         name=default
-        if [ "${{ github.ref }}" = "main" ]; then
+        if [ "${{ github.ref_name }}" = "main" ]; then
           name=production
-        elif [ "${{ github.ref }}" = "staging" ]; then
-          name="${{ github.ref }}"
+        elif [ "${{ github.ref_name }}" = "staging" ]; then
+          name="${{ github.ref_name }}"
         else
           name=development
         fi
@@ -52,7 +52,7 @@ jobs:
       if: github.event_name == 'push'
       run: terraform apply -auto-approve
     - name: Applying on default workspace
-      if: github.event_name == 'push' && github.ref == 'main'
+      if: github.event_name == 'push' && github.ref_name == 'main'
       run: |
         terraform workspace select default
         terraform apply -auto-approve
