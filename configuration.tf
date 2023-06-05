@@ -13,7 +13,7 @@ locals {
         bucket = "lorentz-state"
       }
       sdlc = {
-        users = ["github"]
+        users = ["github", "mess-up"]
         roles = []
         hub   = ""
       }
@@ -32,7 +32,7 @@ locals {
     }
     sdlc = {
       users = []
-      roles = ["github"]
+      roles = ["github", "mess-up"]
       hub   = terraform.workspace
     }
     dns = {
