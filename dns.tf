@@ -19,3 +19,7 @@ resource "aws_route53_zone" "kingdom" {
   name              = each.value
   delegation_set_id = aws_route53_delegation_set.dns.id
 }
+
+locals {
+  kingdom = one(values(aws_route53_zone.kingdom))
+}
