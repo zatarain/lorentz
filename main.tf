@@ -8,6 +8,7 @@ locals {
   ]
 }
 module "mycv" {
+  count = terraform.workspace != "default" ? 1 : 0
   # for_each = toset(local.configuration.vpc)
   source  = "./portfolio"
   name    = "curriculum-vitae"
