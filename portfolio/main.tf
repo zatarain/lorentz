@@ -1,7 +1,12 @@
+resource "aws_ecr_repository" "image" {
+  name = var.name
+}
+
 resource "aws_ecs_cluster" "portfolio" {
   name = var.name
 }
 
+/**
 locals {
   api_container = "${var.prefix}-api-run"
   web_container = "${var.prefix}-web-run"
@@ -11,7 +16,7 @@ data "template_file" "task-definition-template" {
   template = file("${path.module}/task-definition.json.tpl")
   vars = {
     CONTAINER = local.api_container
-    IMAGE     = replace(var.hub.repository_url, "https://", "")
+    IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "latest"
     PORT      = 3000
   }
@@ -115,3 +120,4 @@ resource "aws_security_group" "api-access" {
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
+/**/

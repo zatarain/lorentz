@@ -1,3 +1,4 @@
+/**
 resource "aws_alb" "portfolio" {
   name               = "${var.prefix}-alb" # Naming our load balancer
   load_balancer_type = "application"
@@ -49,3 +50,4 @@ resource "aws_lb_listener" "listener" {
     target_group_arn = aws_lb_target_group.workers.arn # Referencing our target group
   }
 }
+/**/

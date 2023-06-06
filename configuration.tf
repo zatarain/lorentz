@@ -13,15 +13,14 @@ locals {
         bucket = "lorentz-state"
       }
       sdlc = {
-        users = ["github"]
-        roles = []
-        hub   = ""
+        users        = ["github"]
+        roles        = []
+        environments = []
       }
       dns = {
         domains = ["zatara.in"]
         zones   = []
       }
-      vpc = []
     })
   })
 
@@ -31,15 +30,14 @@ locals {
       bucket = ""
     }
     sdlc = {
-      users = []
-      roles = ["github"]
-      hub   = terraform.workspace
+      users        = []
+      roles        = ["github"]
+      environments = [terraform.workspace]
     }
     dns = {
       domains = []
       zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
     }
-    vpc = [terraform.workspace]
   })
 
   configuration = jsondecode(lookup(local.settings, terraform.workspace, local.environments))

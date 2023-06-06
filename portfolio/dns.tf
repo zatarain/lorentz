@@ -1,5 +1,6 @@
+/**
 resource "aws_route53_record" "api" {
-  zone_id = aws_route53_zone.zatarain.zone_id
+  zone_id = var.zone_id
   name    = "api"
   type    = "A"
   alias {
@@ -10,7 +11,7 @@ resource "aws_route53_record" "api" {
 }
 
 resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.zatarain.zone_id
+  zone_id = var.zone_id
   name    = ""
   type    = "A"
   alias {
@@ -19,3 +20,4 @@ resource "aws_route53_record" "root" {
     evaluate_target_health = true
   }
 }
+/**/
