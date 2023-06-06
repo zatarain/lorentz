@@ -1,4 +1,4 @@
-name: Provisioning Main Infrastructure
+name: Infrastructure Provisioning
 on:
   push:
     branches: [main, staging, development]
