@@ -1,3 +1,4 @@
+/**
 resource "aws_route53_record" "api" {
   zone_id = var.zone_id
   name    = "api"
@@ -19,3 +20,4 @@ resource "aws_route53_record" "root" {
     evaluate_target_health = true
   }
 }
+/**/
