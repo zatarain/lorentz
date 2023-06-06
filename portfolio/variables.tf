@@ -8,10 +8,8 @@ variable "prefix" {
   default = "pt"
 }
 
-variable "hub" {
-  type = object({
-    repository_url = string
-  })
+variable "zone_id" {
+  type = string
 }
 
 variable "vpc_id" {

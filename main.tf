@@ -1,21 +1,18 @@
-
-resource "aws_ecr_repository" "hub" {
-  for_each = toset(local.configuration.vpc)
-  name     = local.configuration.sdlc.hub
-}
-
-/**
-module "mycv" {
-  source = "./portfolio"
-  name   = "curriculum-vitae"
-  prefix = "cv"
-  hub    = aws_ecr_repository.hub
-  dns    = aws_route53_delegation_set.dns
-  vpc_id = aws_default_vpc.default_vpc.id
+locals {
+  kingdom = one(values(aws_route53_zone.kingdom))
+  vpc     = one(values(aws_default_vpc.default_vpc))
   subnets = [
-    aws_default_subnet.default_subnet_a.id,
-    aws_default_subnet.default_subnet_b.id,
-    aws_default_subnet.default_subnet_c.id,
+    one(values(aws_default_subnet.default_subnet_a)),
+    one(values(aws_default_subnet.default_subnet_b)),
+    one(values(aws_default_subnet.default_subnet_c)),
   ]
 }
-/**/
+module "mycv" {
+  # for_each = toset(local.configuration.vpc)
+  source  = "./portfolio"
+  name    = "curriculum-vitae"
+  prefix  = "cv"
+  zone_id = local.kingdom.zone_id
+  vpc_id  = local.vpc.id
+  subnets = local.subnets.*.id
+}
