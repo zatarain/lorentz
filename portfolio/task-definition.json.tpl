@@ -8,8 +8,8 @@
 		"environment": [],
 		"portMappings": [
 			{
-				"containerPort": $PORT,
-				"hostPort": $PORT
+				"containerPort": ${PORT},
+				"hostPort": ${PORT}
 			}
 		],
 		"linuxParameters": {
