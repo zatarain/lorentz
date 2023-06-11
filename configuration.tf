@@ -1,6 +1,6 @@
 locals {
   zone_prefix = tomap({
-    production  = ""
+    production  = "ulises."
     default     = ""
     staging     = "test."
     development = "beta."
@@ -19,7 +19,7 @@ locals {
       }
       dns = {
         domains = ["zatara.in"]
-        zones   = []
+        zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
       }
     })
   })
