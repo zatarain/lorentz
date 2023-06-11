@@ -7,7 +7,7 @@ resource "aws_route53domains_registered_domain" "realm" {
   domain_name = each.value
 
   dynamic "name_server" {
-    for_each = aws_route53_delegation_set.dns.name_servers
+    for_each = toset(aws_route53_delegation_set.dns.name_servers)
     content {
       name = name_server.value
     }
