@@ -18,6 +18,7 @@ data "template_file" "back-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "back-end"
     PORT      = 3000
+    API_URL   = "http://api.${var.domain}"
   }
 }
 
@@ -127,6 +128,7 @@ data "template_file" "front-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "front-end"
     PORT      = 5000
+    API_URL   = "http://api.${var.domain}"
   }
 }
 

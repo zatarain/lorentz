@@ -4,6 +4,7 @@ module "mycv" {
   name     = "curriculum-vitae"
   prefix   = "cv"
   zone_id  = local.kingdom.zone_id
+  domain   = local.kingdom.name
   vpc_id   = local.vpc.id
   subnets  = local.subnets.*.id
 }
