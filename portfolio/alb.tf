@@ -1,5 +1,5 @@
 resource "aws_alb" "back-end" {
-  name               = "${var.prefix}-alb" # Naming our load balancer
+  name               = "${var.prefix}-api-alb" # Naming our load balancer
   load_balancer_type = "application"
 
   # Referencing the default subnets
