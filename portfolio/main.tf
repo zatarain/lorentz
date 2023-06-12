@@ -126,7 +126,7 @@ data "template_file" "front-end-task-definition" {
     CONTAINER = local.web_container
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "front-end"
-    PORT      = 3000
+    PORT      = 5000
   }
 }
 
@@ -154,7 +154,7 @@ resource "aws_ecs_service" "web" {
   load_balancer {
     target_group_arn = aws_lb_target_group.front-end-workers.arn
     container_name   = aws_ecs_task_definition.web-run.family
-    container_port   = 3000
+    container_port   = 5000
   }
 
   network_configuration {
