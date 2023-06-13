@@ -19,6 +19,7 @@ data "template_file" "back-end-task-definition" {
     TAG       = "back-end"
     PORT      = 3000
     API_URL   = "http://api.${var.domain}"
+    CONTROL   = "RAILS_ENV"
   }
 }
 
@@ -129,6 +130,8 @@ data "template_file" "front-end-task-definition" {
     TAG       = "front-end"
     PORT      = 5000
     API_URL   = "http://api.${var.domain}"
+    CONTROL   = "NODE_ENV"
+
   }
 }
 

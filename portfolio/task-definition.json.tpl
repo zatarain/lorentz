@@ -11,11 +11,7 @@
 				"value": "${API_URL}"
 			},
 			{
-				"name": "NODE_ENV",
-				"value": "production"
-			},
-			{
-				"name": "RAILS_ENV",
+				"name": "${CONTROL}",
 				"value": "production"
 			}
 		],
