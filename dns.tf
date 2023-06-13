@@ -26,8 +26,12 @@ data "aws_route53_zone" "realm" {
   name     = trimprefix(each.value, local.zone_prefix[terraform.workspace])
 }
 
+locals {
+  records-for-kingdoms = terraform.workspace == "default" ? [] : local.configuration.dns.zones
+}
+
 resource "aws_route53_record" "kingdom" {
-  for_each = toset(local.configuration.dns.zones)
+  for_each = toset(local.records-for-kingdoms)
   provider = aws.root
   zone_id  = data.aws_route53_zone.realm[each.value].zone_id
   name     = each.value
