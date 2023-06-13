@@ -12,6 +12,10 @@ variable "zone_id" {
   type = string
 }
 
+variable "domain" {
+  type = string
+}
+
 variable "vpc_id" {
   type = string
 }

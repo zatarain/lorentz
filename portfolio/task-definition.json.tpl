@@ -5,11 +5,20 @@
 		"memory": 512,
 		"cpu": 256,
 		"image": "${IMAGE}:${TAG}",
-		"environment": [],
+		"environment": [
+			{
+				"name": "API_URL",
+				"value": "${API_URL}"
+			},
+			{
+				"name": "${CONTROL}",
+				"value": "production"
+			}
+		],
 		"portMappings": [
 			{
-				"containerPort": $PORT,
-				"hostPort": $PORT
+				"containerPort": ${PORT},
+				"hostPort": ${PORT}
 			}
 		],
 		"linuxParameters": {
