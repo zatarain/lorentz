@@ -13,6 +13,10 @@
 			{
 				"name": "NODE_ENV",
 				"value": "production"
+			},
+			{
+				"name": "RAILS_ENV",
+				"value": "production"
 			}
 		],
 		"portMappings": [
