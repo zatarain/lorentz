@@ -9,6 +9,10 @@
 			{
 				"name": "API_URL",
 				"value": "${API_URL}"
+			},
+			{
+				"name": "NODE_ENV",
+				"value": "production"
 			}
 		],
 		"portMappings": [
