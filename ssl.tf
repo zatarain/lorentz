@@ -62,4 +62,10 @@ resource "aws_acm_certificate_validation" "ssl" {
   certificate_arn         = aws_acm_certificate.kingdom[each.value].arn
   validation_record_fqdns = local.validation_record_fqdns[each.value]
 }
-/**/
+
+data "aws_acm_certificate" "kingdom" {
+  for_each = toset(local.configuration.dns.zones)
+  provider = aws.root
+
+  domain = replace(each.value, "/^${local.zone_prefix[terraform.workspace]}/", "*.")
+}

@@ -45,11 +45,15 @@ resource "aws_lb_listener" "api-listener" {
   protocol          = "HTTP"
   port              = 80
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.back-end-workers.arn
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
-/**
+
 resource "aws_lb_listener" "api-secure-listener" {
   load_balancer_arn = aws_alb.back-end.arn
   protocol          = "HTTPS"
@@ -61,7 +65,7 @@ resource "aws_lb_listener" "api-secure-listener" {
     target_group_arn = aws_lb_target_group.back-end-workers.arn
   }
 }
-/**/
+
 resource "aws_alb" "front-end" {
   name               = "${var.prefix}-web-alb" # Naming our load balancer
   load_balancer_type = "application"
@@ -109,11 +113,15 @@ resource "aws_lb_listener" "web-listener" {
   protocol          = "HTTP"
   port              = 80
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.front-end-workers.arn
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
-/**
+
 resource "aws_lb_listener" "web-secure-listener" {
   load_balancer_arn = aws_alb.front-end.arn
   protocol          = "HTTPS"
@@ -125,4 +133,3 @@ resource "aws_lb_listener" "web-secure-listener" {
     target_group_arn = aws_lb_target_group.front-end-workers.arn
   }
 }
-/**/
