@@ -7,5 +7,5 @@ module "mycv" {
   domain      = local.kingdom.name
   vpc_id      = local.vpc.id
   subnets     = local.subnets.*.id
-  certificate = data.aws_acm_certificate.kingdom[local.kingdom.name].arn
+  certificate = aws_acm_certificate.kingdom[local.kingdom.name].arn
 }
