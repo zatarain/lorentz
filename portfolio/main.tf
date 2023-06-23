@@ -97,7 +97,7 @@ resource "aws_ecs_service" "api" {
     subnets          = var.subnets
 
     security_groups = [
-      aws_security_group.api-access.id,
+      aws_security_group.alb-access.id,
     ]
   }
 }
@@ -166,7 +166,7 @@ resource "aws_ecs_service" "web" {
     subnets          = var.subnets
 
     security_groups = [
-      aws_security_group.web-access.id,
+      aws_security_group.alb-access.id,
     ]
   }
 }

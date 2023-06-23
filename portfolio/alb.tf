@@ -6,7 +6,7 @@ resource "aws_alb" "back-end" {
   subnets = var.subnets
   # Referencing the security group
   security_groups = [
-    aws_security_group.back-end-entry-point.id,
+    aws_security_group.entry-point.id,
   ]
 }
 
@@ -81,7 +81,7 @@ resource "aws_alb" "front-end" {
   subnets = var.subnets
   # Referencing the security group
   security_groups = [
-    aws_security_group.front-end-entry-point.id,
+    aws_security_group.entry-point.id,
   ]
 }
 
