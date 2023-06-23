@@ -59,7 +59,7 @@ resource "aws_lb_listener" "api-secure-listener" {
   protocol          = "HTTPS"
   port              = 443
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.certificate
+  certificate_arn   = var.wildcard-certificate
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.back-end-workers.arn
@@ -127,7 +127,7 @@ resource "aws_lb_listener" "web-secure-listener" {
   protocol          = "HTTPS"
   port              = 443
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.certificate
+  certificate_arn   = var.apex-certificate
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.front-end-workers.arn
