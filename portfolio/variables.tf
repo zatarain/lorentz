@@ -23,8 +23,11 @@ variable "vpc_id" {
 variable "subnets" {
   type = list(string)
 }
-/**
-variable "certificate" {
+
+variable "wildcard-certificate" {
   type = string
 }
-/**/
+
+variable "apex-certificate" {
+  type = string
+}

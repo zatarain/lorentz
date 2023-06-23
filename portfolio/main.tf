@@ -18,7 +18,7 @@ data "template_file" "back-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "back-end"
     PORT      = 3000
-    API_URL   = "http://api.${var.domain}"
+    API_URL   = "https://api.${var.domain}"
     CONTROL   = "RAILS_ENV"
   }
 }
@@ -117,7 +117,7 @@ resource "aws_security_group" "api-access" {
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
-    protocol    = "-1"          # Allowing any outgoing protocol 
+    protocol    = "-1"          # Allowing any outgoing protocol
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
@@ -129,9 +129,8 @@ data "template_file" "front-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "front-end"
     PORT      = 5000
-    API_URL   = "http://api.${var.domain}"
+    API_URL   = "https://api.${var.domain}"
     CONTROL   = "NODE_ENV"
-
   }
 }
 
@@ -187,7 +186,7 @@ resource "aws_security_group" "web-access" {
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
-    protocol    = "-1"          # Allowing any outgoing protocol 
+    protocol    = "-1"          # Allowing any outgoing protocol
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
