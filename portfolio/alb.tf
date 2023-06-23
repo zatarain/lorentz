@@ -56,9 +56,9 @@ resource "aws_lb_listener" "api-listener" {
 
 resource "aws_lb_listener" "api-secure-listener" {
   load_balancer_arn = aws_alb.back-end.arn
-  protocol          = "TLS"
+  protocol          = "HTTPS"
   port              = 443
-  alpn_policy       = "HTTP2Preferred"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn   = var.certificate
   default_action {
     type             = "forward"
@@ -124,9 +124,9 @@ resource "aws_lb_listener" "web-listener" {
 
 resource "aws_lb_listener" "web-secure-listener" {
   load_balancer_arn = aws_alb.front-end.arn
-  protocol          = "TLS"
+  protocol          = "HTTPS"
   port              = 443
-  alpn_policy       = "HTTP2Preferred"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn   = var.certificate
   default_action {
     type             = "forward"
