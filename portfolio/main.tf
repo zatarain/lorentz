@@ -131,7 +131,6 @@ data "template_file" "front-end-task-definition" {
     PORT      = 5000
     API_URL   = "https://api.${var.domain}"
     CONTROL   = "NODE_ENV"
-
   }
 }
 
