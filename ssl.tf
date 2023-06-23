@@ -8,17 +8,6 @@ resource "aws_acm_certificate" "kingdom" {
   }
 }
 
-resource "aws_acm_certificate" "realm" {
-  for_each          = toset(local.configuration.dns.zones)
-  domain_name       = each.value
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-/**
 locals {
   ssl_validation_records = flatten([
     for key, certificate in aws_acm_certificate.kingdom : [
