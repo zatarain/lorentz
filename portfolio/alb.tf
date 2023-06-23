@@ -94,6 +94,13 @@ resource "aws_security_group" "front-end-entry-point" {
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
   }
 
+  ingress {
+    from_port   = 443 # Allowing traffic in from port 80
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+  }
+
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
