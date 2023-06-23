@@ -80,11 +80,11 @@ locals {
     ]
   }
 
-	realm_validation_record_fqdns = {
+  realm_validation_record_fqdns = {
     for domain in local.configuration.dns.zones : domain => [
       for record in aws_route53_record.realm-ssl :
       record.fqdn if record.zone_id == aws_route53_zone.kingdom[domain].zone_id
-			# Filter has to be the same, as zone_id is the same for kingdom and realm
+      # Filter has to be the same, as zone_id is the same for kingdom and realm
     ]
   }
 }
