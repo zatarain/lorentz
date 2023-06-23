@@ -29,8 +29,8 @@ resource "aws_security_group" "back-end-entry-point" {
 
 resource "aws_lb_target_group" "back-end-workers" {
   name        = "${var.prefix}-back-end-workers"
-  port        = 80
-  protocol    = "HTTP"
+  port        = 443
+  protocol    = "HTTPS"
   target_type = "ip"
   vpc_id      = var.vpc_id # Referencing the default VPC
 
