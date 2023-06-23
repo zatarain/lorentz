@@ -19,6 +19,13 @@ resource "aws_security_group" "back-end-entry-point" {
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
   }
 
+  ingress {
+    from_port   = 443 # Allowing traffic in from port 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+  }
+
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
@@ -29,8 +36,8 @@ resource "aws_security_group" "back-end-entry-point" {
 
 resource "aws_lb_target_group" "back-end-workers" {
   name        = "${var.prefix}-back-end-workers"
-  port        = 443
-  protocol    = "HTTPS"
+  port        = 80
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id # Referencing the default VPC
 
