@@ -102,26 +102,6 @@ resource "aws_ecs_service" "api" {
   }
 }
 
-resource "aws_security_group" "api-access" {
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-
-    # Only allowing traffic in from the load balancer security group
-    security_groups = [
-      aws_security_group.back-end-entry-point.id,
-    ]
-  }
-
-  egress {
-    from_port   = 0             # Allowing any incoming port
-    to_port     = 0             # Allowing any outgoing port
-    protocol    = "-1"          # Allowing any outgoing protocol
-    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
-  }
-}
-
 data "template_file" "front-end-task-definition" {
   template = file("${path.module}/task-definition.json.tpl")
   vars = {
@@ -168,25 +148,5 @@ resource "aws_ecs_service" "web" {
     security_groups = [
       aws_security_group.alb-access.id,
     ]
-  }
-}
-
-resource "aws_security_group" "web-access" {
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-
-    # Only allowing traffic in from the load balancer security group
-    security_groups = [
-      aws_security_group.front-end-entry-point.id,
-    ]
-  }
-
-  egress {
-    from_port   = 0             # Allowing any incoming port
-    to_port     = 0             # Allowing any outgoing port
-    protocol    = "-1"          # Allowing any outgoing protocol
-    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
