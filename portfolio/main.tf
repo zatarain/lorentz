@@ -88,7 +88,7 @@ resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
+resource "aws_iam_role_policy_attachment" "task-executor-access-to-s3" {
   role       = aws_iam_role.task-command-executor.name
   policy_arn = aws_iam_policy.s3-access.arn
 }
