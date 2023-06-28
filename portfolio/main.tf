@@ -19,6 +19,10 @@ data "template_file" "back-end-task-definition" {
     TAG       = "back-end"
     PORT      = 3000
     ENVIRONMENT = jsonencode([
+      {
+        name = "AWS_ENVIRONMENT"
+        value = terraform.workspace
+      },
 			{
 				name= "API_URL",
 				value= "https://api.${var.domain}"
@@ -26,7 +30,7 @@ data "template_file" "back-end-task-definition" {
 			{
 				name= "RAILS_ENV",
 				value= "production"
-			}
+			},
     ])
   }
 }
@@ -77,6 +81,16 @@ data "aws_iam_policy_document" "command-executor" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+
+  statement {
+    sid = "CurriculumAPI"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+    ]
+
+    resources = [aws_s3_bucket.cv-storage.arn]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
@@ -118,6 +132,10 @@ data "template_file" "front-end-task-definition" {
     TAG       = "front-end"
     PORT      = 5000
     ENVIRONMENT = jsonencode([
+      {
+        name = "AWS_ENVIRONMENT"
+        value = terraform.workspace
+      },
 			{
 				name= "API_URL",
 				value= "https://api.${var.domain}"
@@ -125,7 +143,7 @@ data "template_file" "front-end-task-definition" {
 			{
 				name= "NODE_ENV",
 				value= "production"
-			}
+			},
     ])
   }
 }
