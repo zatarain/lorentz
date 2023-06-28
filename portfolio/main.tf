@@ -18,8 +18,16 @@ data "template_file" "back-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "back-end"
     PORT      = 3000
-    API_URL   = "https://api.${var.domain}"
-    CONTROL   = "RAILS_ENV"
+    ENVIRONMENT = jsonencode([
+			{
+				name= "API_URL",
+				value= "https://api.${var.domain}"
+			},
+			{
+				name= "RAILS_ENV",
+				value= "production"
+			}
+    ])
   }
 }
 
@@ -109,8 +117,16 @@ data "template_file" "front-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "front-end"
     PORT      = 5000
-    API_URL   = "https://api.${var.domain}"
-    CONTROL   = "NODE_ENV"
+    ENVIRONMENT = jsonencode([
+			{
+				name= "API_URL",
+				value= "https://api.${var.domain}"
+			},
+			{
+				name= "NODE_ENV",
+				value= "production"
+			}
+    ])
   }
 }
 
