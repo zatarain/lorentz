@@ -2,8 +2,8 @@
 	{
 		"name": "${CONTAINER}",
 		"essential": true,
-		"memory": 1024,
-		"cpu": 512,
+		"memory": 512,
+		"cpu": 256,
 		"image": "${IMAGE}:${TAG}",
 		"environment": ${ENVIRONMENT},
 		"portMappings": [
