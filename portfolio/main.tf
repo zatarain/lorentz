@@ -81,21 +81,16 @@ data "aws_iam_policy_document" "command-executor" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
-
-  statement {
-    sid = "CurriculumAPI"
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-    ]
-
-    resources = [aws_s3_bucket.cv-storage.arn]
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   role       = aws_iam_role.task-command-executor.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
+  role       = aws_iam_role.task-command-executor.name
+  policy_arn = aws_iam_policy.s3-access.arn
 }
 
 resource "aws_ecs_service" "api" {
