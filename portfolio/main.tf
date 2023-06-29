@@ -18,8 +18,20 @@ data "template_file" "back-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "back-end"
     PORT      = 3000
-    API_URL   = "https://api.${var.domain}"
-    CONTROL   = "RAILS_ENV"
+    ENVIRONMENT = jsonencode([
+      {
+        name  = "AWS_ENVIRONMENT"
+        value = terraform.workspace
+      },
+			{
+				name  = "AWS_REGION"
+				value = "eu-west-1"
+			},
+			{
+				name  = "RAILS_ENV"
+				value = "production"
+			},
+    ])
   }
 }
 
@@ -76,6 +88,12 @@ resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+resource "aws_iam_role_policy_attachment" "task-executor-access-to-s3" {
+  role       = aws_iam_role.task-command-executor.name
+#   #policy_arn = aws_iam_policy.s3-access.arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
 resource "aws_ecs_service" "api" {
   name    = "${var.prefix}-api"
   cluster = aws_ecs_cluster.portfolio.id
@@ -109,8 +127,20 @@ data "template_file" "front-end-task-definition" {
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
     TAG       = "front-end"
     PORT      = 5000
-    API_URL   = "https://api.${var.domain}"
-    CONTROL   = "NODE_ENV"
+    ENVIRONMENT = jsonencode([
+      {
+        name = "AWS_ENVIRONMENT"
+        value = terraform.workspace
+      },
+			{
+				name= "API_URL",
+				value= "https://api.${var.domain}"
+			},
+			{
+				name= "NODE_ENV",
+				value= "production"
+			},
+    ])
   }
 }
 

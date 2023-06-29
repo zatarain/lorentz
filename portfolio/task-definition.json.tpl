@@ -5,16 +5,7 @@
 		"memory": 512,
 		"cpu": 256,
 		"image": "${IMAGE}:${TAG}",
-		"environment": [
-			{
-				"name": "API_URL",
-				"value": "${API_URL}"
-			},
-			{
-				"name": "${CONTROL}",
-				"value": "production"
-			}
-		],
+		"environment": ${ENVIRONMENT},
 		"portMappings": [
 			{
 				"containerPort": ${PORT},
