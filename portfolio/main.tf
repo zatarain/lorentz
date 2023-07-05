@@ -125,7 +125,7 @@ resource "aws_iam_role_policy_attachment" "task-executor-access-to-s3" {
 }
 
 resource "aws_iam_role_policy_attachment" "task-executor-access-to-secrets" {
-  role       = aws_iam_role.task-command-executor.name
+  role       = aws_iam_role.task-runner.name
   policy_arn = aws_iam_policy.secrets-access.arn
 }
 
