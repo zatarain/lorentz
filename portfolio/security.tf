@@ -41,3 +41,16 @@ resource "aws_security_group" "alb-access" {
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
+
+resource "aws_secretsmanager_secret" "instagram" {
+  name = "${var.prefix}-instagram"
+}
+
+resource "aws_secretsmanager_secret_version" "instagram" {
+  secret_id     = aws_secretsmanager_secret.instagram.id
+  secret_string = jsonencode({
+    id = "change me"
+    key = "change me"
+    token = "change me"
+  })
+}

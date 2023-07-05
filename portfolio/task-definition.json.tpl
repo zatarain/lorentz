@@ -6,6 +6,7 @@
 		"cpu": 256,
 		"image": "${IMAGE}:${TAG}",
 		"environment": ${ENVIRONMENT},
+		"secrets": ${SECRETS},
 		"portMappings": [
 			{
 				"containerPort": ${PORT},

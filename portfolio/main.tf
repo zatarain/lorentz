@@ -31,6 +31,24 @@ data "template_file" "back-end-task-definition" {
 				name  = "RAILS_ENV"
 				value = "production"
 			},
+      {
+        name = "INSTAGRAM_REDIRECT_URI"
+        value= "https://${var.domain}"
+      },
+    ])
+    SECRETS = jsonencode([
+      {
+        name  = "INSTAGRAM_CLIENT_ID"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:id::"
+      },
+      {
+        name  = "INSTAGRAM_CLIENT_SECRET"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:key::"
+      },
+      {
+        name  = "INSTAGRAM_ACCESS_TOKEN"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:token::"
+      },
     ])
   }
 }
@@ -141,6 +159,7 @@ data "template_file" "front-end-task-definition" {
 				value= "production"
 			},
     ])
+    SECRETS = jsonencode([])
   }
 }
 
