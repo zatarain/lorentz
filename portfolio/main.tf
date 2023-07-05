@@ -99,11 +99,19 @@ data "aws_iam_policy_document" "command-executor" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
 
+data "aws_iam_policy_document" "secrets-manager-access" {
   statement {
     actions = ["secretsmanager:GetSecretValue"]
     resources = [aws_secretsmanager_secret.instagram.arn]
   }
+}
+
+resource "aws_iam_policy" "secrets-access" {
+  name   = "PortfolioSecretsAccess"
+  path   = "/"
+  policy = data.aws_iam_policy_document.secrets-manager-access.json
 }
 
 resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
@@ -114,6 +122,11 @@ resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
 resource "aws_iam_role_policy_attachment" "task-executor-access-to-s3" {
   role       = aws_iam_role.task-command-executor.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "task-executor-access-to-secrets" {
+  role       = aws_iam_role.task-command-executor.name
+  policy_arn = aws_iam_policy.secrets-access.arn
 }
 
 resource "aws_ecs_service" "api" {
