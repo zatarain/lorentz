@@ -31,6 +31,24 @@ data "template_file" "back-end-task-definition" {
 				name  = "RAILS_ENV"
 				value = "production"
 			},
+      {
+        name = "INSTAGRAM_REDIRECT_URI"
+        value= "https://${var.domain}"
+      },
+    ])
+    SECRETS = jsonencode([
+      {
+        name  = "INSTAGRAM_CLIENT_ID"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:id::"
+      },
+      {
+        name  = "INSTAGRAM_CLIENT_SECRET"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:key::"
+      },
+      {
+        name  = "INSTAGRAM_ACCESS_TOKEN"
+        valueFrom = "${aws_secretsmanager_secret.instagram.arn}:token::"
+      },
     ])
   }
 }
@@ -83,6 +101,19 @@ data "aws_iam_policy_document" "command-executor" {
   }
 }
 
+data "aws_iam_policy_document" "secrets-manager-access" {
+  statement {
+    actions = ["secretsmanager:GetSecretValue"]
+    resources = [aws_secretsmanager_secret.instagram.arn]
+  }
+}
+
+resource "aws_iam_policy" "secrets-access" {
+  name   = "PortfolioSecretsAccess"
+  path   = "/"
+  policy = data.aws_iam_policy_document.secrets-manager-access.json
+}
+
 resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
   role       = aws_iam_role.task-command-executor.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -90,8 +121,12 @@ resource "aws_iam_role_policy_attachment" "task-command-executor-policy" {
 
 resource "aws_iam_role_policy_attachment" "task-executor-access-to-s3" {
   role       = aws_iam_role.task-command-executor.name
-#   #policy_arn = aws_iam_policy.s3-access.arn
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "task-executor-access-to-secrets" {
+  role       = aws_iam_role.task-runner.name
+  policy_arn = aws_iam_policy.secrets-access.arn
 }
 
 resource "aws_ecs_service" "api" {
@@ -141,6 +176,7 @@ data "template_file" "front-end-task-definition" {
 				value= "production"
 			},
     ])
+    SECRETS = jsonencode([])
   }
 }
 
