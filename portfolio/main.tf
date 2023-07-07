@@ -42,7 +42,7 @@ data "template_file" "back-end-task-definition" {
       },
       {
         name  = "POSTGRES_PORT"
-        value = aws_db_instance.postgres.port
+        value = tostring(aws_db_instance.postgres.port)
       },
     ])
     SECRETS = jsonencode([
