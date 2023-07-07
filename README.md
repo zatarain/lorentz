@@ -68,7 +68,7 @@ Then, the Terraform back-end can be initialised with following command:
 terraform init -backend-config back-end/default.tfvars
 ```
 
-Finally, make sure you add `development` profile to `~/.aws/config` file. It should look similar like following:
+Make sure you add `development` profile to `~/.aws/config` file. It should look similar like following:
 
 ```ini
 [default]
@@ -78,6 +78,12 @@ output = json
 [profile development]
 role_arn = arn:aws:iam::<DEVELOPMENT-ACCOUNT-ID>:role/your-user
 source_profile = default
+```
+
+Run following command to change to the development workspace:
+
+```sh
+terraform workspace select development
 ```
 
 ## 🚀 Provisioning
