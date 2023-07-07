@@ -10,9 +10,9 @@ resource aws_s3_bucket "cv-storage" {
 resource "aws_db_instance" "postgres" {
   allocated_storage           = 20
 	max_allocated_storage				= 100
-  identifier                  = "${var.prefix}-${var.name}"
+  identifier                  = "${var.prefix}-postgres"
 	engine                      = "postgres"
-  engine_version              = "14.7"
+  engine_version              = "14.8"
   instance_class              = "db.t3.micro"
   manage_master_user_password = true
 	multi_az  									= false
