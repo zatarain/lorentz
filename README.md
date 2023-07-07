@@ -12,6 +12,7 @@ This repository aims to hold an infrastructure as code project to define and pro
   * 💭 [Assumptions](#-assumptions)
 * 🪄 [Setup and Orchestration](#-setup-and-orchestration)
 * 🚀 [Provisioning](#-provisioning)
+* 🌟 [Dependency updates](#-dependency-updates)
 * 📚 [References](#-references)
 
 ## 🔭 Overview
@@ -86,6 +87,12 @@ Run following command to change to the development workspace:
 terraform workspace select development
 ```
 
+**NOTE:** Sometimes it's required reinitialise the backend, for example when a new version of a dependency is suggested by `dependabot` ([see more details below](#-dependency-updates)) or new module is added. In those run cases following command:
+
+```sh
+terraform init -backend-config back-end/default.tfvars -upgrade
+```
+
 ## 🚀 Provisioning
 
 There is a [pipeline][action-provisioning] already set up in [GitHub Actions][lorentz-actions] to provision the infrastructure to the correspondent environment. The pipeline is triggered on every push or pull request sync, it basically does following depending on the branch name:
@@ -94,6 +101,10 @@ There is a [pipeline][action-provisioning] already set up in [GitHub Actions][lo
 * `staging`: Apply infrastructure changes to staging account.
 * `main`: Apply infrastructure changes to production account **and default account**.
 * `any other branch`: Only lint, validates and generate plan for infrastructure changes.
+
+## 🌟 Dependency updates
+
+There is a pipeline for [dependabot][github-dependabot] in order to keep the provider versions and other terraform dependencies up to date, which is triggered weekly (on Sunday nights) and generate pull requests in case of any dependency has an update.
 
 ## 📚 References
 
@@ -111,3 +122,4 @@ There is a [pipeline][action-provisioning] already set up in [GitHub Actions][lo
 [lorentz-actions]: https://github.com/zatarain/lorentz/actions
 [action-provisioning]: https://github.com/zatarain/lorentz/blob/main/.github/workflows/provisioning.yml
 [github-actions-docs]: https://docs.github.com/en/actions
+[github-dependabot]: https://docs.github.com/en/rest/dependabot
