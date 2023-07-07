@@ -7,10 +7,38 @@ on:
     types: [opened, synchronize]
 
 jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.names.outputs.name }}
+      environment: ${{ steps.names.outputs.environment }}
+    env:
+      BRANCH: ${{ github.ref_name }}
+    steps:
+      - id: names
+        run: |
+          name=default
+          environtment=''
+          if [ "$BRANCH" = "main" ]; then
+            name=production
+            environment=${name^}
+          elif [ "$BRANCH" = "staging" ]; then
+            name="$BRANCH"
+            environment=${name^}
+          else
+            name=development
+            if [ "$BRANCH" = "development" ]; then
+              environment=${name^}
+            fi
+          fi
+          echo name=$name >> "$GITHUB_OUTPUT"
+          echo environtment=$environment >> "$GITHUB_OUTPUT"
+
   provisioning:
     name: Terraform Provisioning
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || contains(toJson('["staging", "development"]'), github.ref_name) && github.ref_name || null }}
+    needs: workspace
+    environment: ${{ needs.workspace.outputs.environment }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -19,18 +47,6 @@ jobs:
       TF_VAR_aws_env_id: ${{ secrets.TF_VAR_AWS_ENV_ID }}
       TF_VAR_database_username: ${{ secrets.DATABASE_USERNAME }}
     steps:
-    - id: workspace
-      name: Terraform workspace based on branch name
-      run: |
-        name=default
-        if [ "${{ github.ref_name }}" = "main" ]; then
-          name=production
-        elif [ "${{ github.ref_name }}" = "staging" ]; then
-          name="${{ github.ref_name }}"
-        else
-          name=development
-        fi
-        echo name=$name >> "$GITHUB_OUTPUT"
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
@@ -46,11 +62,11 @@ jobs:
       run: terraform validate
     - name: Planning in default workspace
       run: terraform plan
-    - name: Select ${{ steps.workspace.outputs.name }} workspace
-      run: terraform workspace select ${{ steps.workspace.outputs.name }}
-    - name: Planning in ${{ steps.workspace.outputs.name }} workspace
+    - name: Select ${{ needs.workspace.outputs.name }} workspace
+      run: terraform workspace select ${{ needs.workspace.outputs.name }}
+    - name: Planning in ${{ needs.workspace.outputs.name }} workspace
       run: terraform plan
-    - name: Applying on ${{ steps.workspace.outputs.name }} workspace
+    - name: Applying on ${{ needs.workspace.outputs.name }} workspace
       if: github.event_name == 'push'
       run: terraform apply -auto-approve
     - name: Applying on default workspace
