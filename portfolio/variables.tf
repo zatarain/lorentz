@@ -31,3 +31,10 @@ variable "wildcard-certificate" {
 variable "apex-certificate" {
   type = string
 }
+
+variable "postgres" {
+  type      = object({
+    username = string
+  })
+  sensitive = true
+}

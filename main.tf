@@ -7,6 +7,9 @@ module "mycv" {
   domain   = local.kingdom.name
   vpc_id   = local.vpc.id
   subnets  = local.subnets.*.id
+  postgres = {
+    username = var.database_username
+  }
 
   wildcard-certificate = aws_acm_certificate.kingdom[local.kingdom.name].arn
   apex-certificate     = aws_acm_certificate.realm[local.kingdom.name].arn

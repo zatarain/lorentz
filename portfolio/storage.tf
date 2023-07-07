@@ -10,13 +10,13 @@ resource aws_s3_bucket "cv-storage" {
 resource "aws_db_instance" "postgres" {
   allocated_storage           = 20
 	max_allocated_storage				= 100
-  identifier                  = "${var.prefix}-${terraform.workspace}"
+  identifier                  = "${var.prefix}-${var.name}"
 	engine                      = "postgres"
   engine_version              = "14.7"
   instance_class              = "db.t3.micro"
   manage_master_user_password = true
 	multi_az  									= false
-  username                    = "administrator"
+  username                    = var.postgres.username
   parameter_group_name        = "default.postgres14"
 	publicly_accessible					= terraform.workspace == "development"
 	skip_final_snapshot         = true
