@@ -8,6 +8,7 @@ on:
 
 jobs:
   workspace:
+    name: Determining Workspace and Environment
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.names.outputs.name }}
