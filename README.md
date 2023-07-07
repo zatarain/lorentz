@@ -5,6 +5,15 @@
 
 This repository aims to hold an infrastructure as code project to define and provision the `ether`-structure for my personal projects. Its name comes after [Hendrik Lorentz][hendrik-lorentz] who was a Dutch physics and his Ether Theory, which also gives the name to the Ethernet standard for Networks (yes, this is yet another nerdy reference from me).
 
+## 🗂️ Table of content
+
+* 🔭 [Overview](#-overview)
+  * 🧩 [Structure](#-structure)
+  * 💭 [Assumptions](#-assumptions)
+* 🪄 [Setup and Orchestration](#-setup-and-orchestration)
+* 🚀 [Provisioning](#-provisioning)
+* 📚 [References](#-references)
+
 ## 🔭 Overview
 
 The infrastructure is defined using [Hashicorp Configuration Language][hcl-docs] and can be provisioned to [Amazon Web Services][aws-docs] using [Terraform][terraform]. The repository is designed to use multiple AWS accounts, such as development and production accounts.
@@ -39,7 +48,7 @@ Following assumptions were taken:
 
 ## 🪄 Setup and Orchestration
 
-In order to develop with this repository it's required to have installed terraform and AWS CLI. Then, configure credentials for an [Identity and Access Management][iam-docs] user who can assume a role that have  enough permissions to create resources on the AWS Development Account. The configuration can be performed with:
+In order to develop with this repository it's required to have installed terraform and AWS CLI. Then, configure credentials for an [Identity and Access Management][what-is-iam] user who can assume a role that have  enough permissions to create resources on the AWS Development Account. The configuration can be performed with:
 
 ```sh
 aws configure
@@ -80,11 +89,19 @@ There is a [pipeline][action-provisioning] already set up in [GitHub Actions][lo
 * `main`: Apply infrastructure changes to production account **and default account**.
 * `any other branch`: Only lint, validates and generate plan for infrastructure changes.
 
+## 📚 References
+
+* [Amazon Web Services][aws-docs]
+* [Hashicorp Configuration Language][hcl-docs]
+* [GitHub Actions][github-actions-docs]
+
 ---
 
 [hendrik-lorentz]: https://en.wikipedia.org/wiki/Hendrik_Lorentz
 [terraform]: https://www.terraform.io
 [aws-docs]: https://docs.aws.amazon.com
+[what-is-iam]: https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html
 [hcl-docs]: https://developer.hashicorp.com/terraform/language
 [lorentz-actions]: https://github.com/zatarain/lorentz/actions
 [action-provisioning]: https://github.com/zatarain/lorentz/blob/main/.github/workflows/provisioning.yml
+[github-actions-docs]: https://docs.github.com/en/actions
