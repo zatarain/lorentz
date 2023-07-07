@@ -17,7 +17,7 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
       TF_VAR_aws_root_id: ${{ secrets.TF_VAR_AWS_ROOT_ID }}
       TF_VAR_aws_env_id: ${{ secrets.TF_VAR_AWS_ENV_ID }}
-      ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
+      TF_VAR_database_username: ${{ secrets.DATABASE_USERNAME }}
     steps:
     - id: workspace
       name: Terraform workspace based on branch name
@@ -31,7 +31,6 @@ jobs:
           name=development
         fi
         echo name=$name >> "$GITHUB_OUTPUT"
-        echo "Environment Name: $ENVIRONMENT_NAME"
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
