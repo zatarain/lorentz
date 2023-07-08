@@ -22,6 +22,6 @@ resource "aws_db_instance" "postgres" {
 	skip_final_snapshot         = true
 	vpc_security_group_ids			= [
 		aws_security_group.database-connection.id,
-		aws_security_group.entry-point.id,
+		# aws_security_group.entry-point.id,
 	]
 }
