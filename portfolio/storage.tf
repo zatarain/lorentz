@@ -20,4 +20,8 @@ resource "aws_db_instance" "postgres" {
   parameter_group_name        = "default.postgres14"
 	publicly_accessible					= terraform.workspace == "development"
 	skip_final_snapshot         = true
+	vpc_security_group_ids			= [
+		aws_security_group.database-connection.id,
+		aws_security_group.entry-point.id,
+	]
 }

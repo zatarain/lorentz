@@ -54,3 +54,34 @@ resource "aws_secretsmanager_secret_version" "instagram" {
     token = "change me"
   })
 }
+
+# Creating a security group for database
+resource "aws_security_group" "database-connection" {
+  ingress {
+    from_port   = 5432 # Allowing traffic in from port 80
+    to_port     = 5432
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.entry-point.id,
+    ]
+  }
+
+  ingress {
+    from_port   = 5432 # Allowing traffic in from port 80
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [
+      "185.153.177.18/32",
+      "172.31.0.0/20",
+      "172.31.16.0/20",
+      "172.31.32.0/20",
+    ]
+  }
+
+  egress {
+    from_port   = 0             # Allowing any incoming port
+    to_port     = 0             # Allowing any outgoing port
+    protocol    = "-1"          # Allowing any outgoing protocol
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
+  }
+}
