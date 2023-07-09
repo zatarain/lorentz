@@ -54,3 +54,24 @@ resource "aws_secretsmanager_secret_version" "instagram" {
     token = "change me"
   })
 }
+
+# Creating a security group for database
+resource "aws_security_group" "database-connection" {
+  name = "PostgreSQL Connections"
+  ingress {
+    from_port   = 5432 # Allowing traffic in from port 80
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc.cidr_block]
+    security_groups = [
+      aws_security_group.entry-point.id,
+    ]
+  }
+
+  egress {
+    from_port   = 0             # Allowing any incoming port
+    to_port     = 0             # Allowing any outgoing port
+    protocol    = "-1"          # Allowing any outgoing protocol
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
+  }
+}

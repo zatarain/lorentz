@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "back-end-workers" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = var.vpc_id # Referencing the default VPC
+  vpc_id      = var.vpc.id # Referencing the default VPC
 
   health_check {
     matcher = "200,301,302"
@@ -66,7 +66,7 @@ resource "aws_lb_target_group" "front-end-workers" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = var.vpc_id # Referencing the default VPC
+  vpc_id      = var.vpc.id # Referencing the default VPC
 
   health_check {
     matcher = "200,301,302"

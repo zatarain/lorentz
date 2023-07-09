@@ -16,8 +16,12 @@ variable "domain" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
+variable "vpc" {
+  type = object({
+    id                        = string
+    default_security_group_id = string
+    cidr_block                = string
+  })
 }
 
 variable "subnets" {
@@ -30,4 +34,11 @@ variable "wildcard-certificate" {
 
 variable "apex-certificate" {
   type = string
+}
+
+variable "postgres" {
+  type      = object({
+    username = string
+  })
+  sensitive = true
 }

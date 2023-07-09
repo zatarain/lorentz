@@ -9,6 +9,7 @@ resource "aws_ecs_cluster" "portfolio" {
 locals {
   api_container = "${var.prefix}-api-run"
   web_container = "${var.prefix}-web-run"
+  postgres_user = one(aws_db_instance.postgres.master_user_secret)
 }
 
 data "template_file" "back-end-task-definition" {
@@ -32,8 +33,16 @@ data "template_file" "back-end-task-definition" {
 				value = "production"
 			},
       {
-        name = "INSTAGRAM_REDIRECT_URI"
-        value= "https://${var.domain}"
+        name  = "INSTAGRAM_REDIRECT_URI"
+        value = "https://${var.domain}"
+      },
+      {
+        name  = "POSTGRES_HOST"
+        value = aws_db_instance.postgres.address
+      },
+      {
+        name  = "POSTGRES_PORT"
+        value = tostring(aws_db_instance.postgres.port)
       },
     ])
     SECRETS = jsonencode([
@@ -49,6 +58,14 @@ data "template_file" "back-end-task-definition" {
         name  = "INSTAGRAM_ACCESS_TOKEN"
         valueFrom = "${aws_secretsmanager_secret.instagram.arn}:token::"
       },
+      {
+        name  = "POSTGRES_USERNAME"
+        valueFrom = "${local.postgres_user.secret_arn}:username::"
+      },
+      {
+        name  = "POSTGRES_PASSWORD"
+        valueFrom = "${local.postgres_user.secret_arn}:password::"
+      },
     ])
   }
 }
@@ -58,8 +75,8 @@ resource "aws_ecs_task_definition" "api-run" {
   container_definitions    = data.template_file.back-end-task-definition.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 512         # Specifying the memory our container requires
-  cpu                      = 256         # Specifying the CPU our container requires
+  memory                   = 2048        # Specifying the memory our container requires
+  cpu                      = 1024        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.task-runner.arn
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }
@@ -104,7 +121,10 @@ data "aws_iam_policy_document" "command-executor" {
 data "aws_iam_policy_document" "secrets-manager-access" {
   statement {
     actions = ["secretsmanager:GetSecretValue"]
-    resources = [aws_secretsmanager_secret.instagram.arn]
+    resources = [
+      aws_secretsmanager_secret.instagram.arn,
+      local.postgres_user.secret_arn,
+    ]
   }
 }
 
