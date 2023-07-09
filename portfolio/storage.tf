@@ -22,6 +22,7 @@ resource "aws_db_instance" "postgres" {
 	skip_final_snapshot         = true
 	vpc_security_group_ids			= [
 		aws_security_group.database-connection.id,
+		var.vpc.default_security_group_id,
 	]
 
 	depends_on = [
