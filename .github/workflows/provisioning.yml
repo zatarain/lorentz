@@ -17,6 +17,7 @@ jobs:
       BRANCH: ${{ github.ref_name }}
     steps:
       - id: names
+        name: Name for Terraform Workspace and GitHub Environment
         run: |
           name=default
           environtment=''
