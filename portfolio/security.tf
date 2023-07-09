@@ -63,6 +63,9 @@ resource "aws_security_group" "database-connection" {
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = [var.vpc.cidr_block]
+    security_groups = [
+      aws_security_group.entry-point.id,
+    ]
   }
 
   egress {
