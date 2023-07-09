@@ -5,7 +5,7 @@ module "mycv" {
   prefix   = "cv"
   zone_id  = local.kingdom.zone_id
   domain   = local.kingdom.name
-  vpc_id   = local.vpc.id
+  vpc   = local.vpc
   subnets  = local.subnets.*.id
   postgres = {
     username = var.database_username

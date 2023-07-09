@@ -1,6 +1,5 @@
 # Creating a security group for load balancers
 resource "aws_security_group" "entry-point" {
-  name = "HTTP Entry Point"
   ingress {
     from_port   = 80 # Allowing traffic in from port 80
     to_port     = 80
@@ -24,7 +23,6 @@ resource "aws_security_group" "entry-point" {
 }
 
 resource "aws_security_group" "alb-access" {
-  name = "Application Load Balancer Access"
   ingress {
     from_port = 0
     to_port   = 0
@@ -64,22 +62,8 @@ resource "aws_security_group" "database-connection" {
     from_port   = 5432 # Allowing traffic in from port 80
     to_port     = 5432
     protocol    = "tcp"
-    security_groups = [
-      aws_security_group.entry-point.id,
-    ]
+    security_groups = [var.vpc.default_security_group_id]
   }
-
-  # ingress {
-  #   from_port   = 5432 # Allowing traffic in from port 80
-  #   to_port     = 5432
-  #   protocol    = "tcp"
-  #   cidr_blocks = [
-  #     "185.153.177.18/32",
-  #     "172.31.0.0/20",
-  #     "172.31.16.0/20",
-  #     "172.31.32.0/20",
-  #   ]
-  # }
 
   egress {
     from_port   = 0             # Allowing any incoming port

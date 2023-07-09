@@ -16,8 +16,11 @@ variable "domain" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
+variable "vpc" {
+  type = object({
+    id                        = string
+    default_security_group_id = string
+  })
 }
 
 variable "subnets" {
