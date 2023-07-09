@@ -62,7 +62,7 @@ resource "aws_security_group" "database-connection" {
     from_port   = 5432 # Allowing traffic in from port 80
     to_port     = 5432
     protocol    = "tcp"
-    security_groups = [var.vpc.default_security_group_id]
+    cidr_blocks = [var.vpc.cidr_block]
   }
 
   egress {

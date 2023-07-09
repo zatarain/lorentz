@@ -20,6 +20,7 @@ variable "vpc" {
   type = object({
     id                        = string
     default_security_group_id = string
+    cidr_block                = string
   })
 }
 
