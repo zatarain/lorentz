@@ -33,7 +33,7 @@ jobs:
             fi
           fi
           echo name=$name >> "$GITHUB_OUTPUT"
-          echo environtment=$environment >> "$GITHUB_OUTPUT"
+          echo environment=$environment >> "$GITHUB_OUTPUT"
 
   provisioning:
     name: Terraform Provisioning
