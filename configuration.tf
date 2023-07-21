@@ -16,7 +16,7 @@ locals {
         users        = ["github"]
         roles        = []
         environments = []
-        workspaces = [terraform.workspace]
+        workspaces   = [terraform.workspace]
       }
       dns = {
         domains = ["zatara.in"]
@@ -35,7 +35,7 @@ locals {
       users        = []
       roles        = ["github"]
       environments = [terraform.workspace]
-      workspaces = [terraform.workspace]
+      workspaces   = [terraform.workspace]
     }
     dns = {
       domains = []

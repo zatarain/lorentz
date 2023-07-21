@@ -1,5 +1,5 @@
 resource "aws_alb" "entry-point" {
-	for_each = toset(local.configuration.load_balancers)
+  for_each           = toset(local.configuration.load_balancers)
   name               = "entry-point" # Naming our load balancer
   load_balancer_type = "application"
 
@@ -13,7 +13,7 @@ resource "aws_alb" "entry-point" {
 
 # Creating a security group for load balancers
 resource "aws_security_group" "entry-point" {
-	for_each = toset(local.configuration.load_balancers)
+  for_each = toset(local.configuration.load_balancers)
   ingress {
     from_port   = 80 # Allowing traffic in from port 80
     to_port     = 80
@@ -37,7 +37,7 @@ resource "aws_security_group" "entry-point" {
 }
 
 resource "aws_security_group" "alb-access" {
-	for_each = toset(local.configuration.load_balancers)
+  for_each = toset(local.configuration.load_balancers)
   ingress {
     from_port = 0
     to_port   = 0
