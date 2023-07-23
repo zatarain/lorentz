@@ -42,3 +42,9 @@ variable "postgres" {
   })
   sensitive = true
 }
+
+variable "certificate" {
+  type = object({
+    arn = string
+  })
+}

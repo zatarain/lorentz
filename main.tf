@@ -11,6 +11,8 @@ module "mycv" {
     username = var.database_username
   }
 
-  wildcard-certificate = aws_acm_certificate.kingdom[local.kingdom.name].arn
-  apex-certificate     = aws_acm_certificate.realm[local.kingdom.name].arn
+  wildcard-certificate = aws_acm_certificate.entry-point[local.kingdom.name].arn
+  apex-certificate     = aws_acm_certificate.entry-point[local.kingdom.name].arn
+
+  certificate = aws_acm_certificate.entry-point[local.kingdom.name]
 }
