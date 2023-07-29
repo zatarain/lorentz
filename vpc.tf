@@ -1,6 +1,10 @@
 # Providing a reference to our default VPC
 resource "aws_default_vpc" "default_vpc" {
   for_each = toset(local.configuration.sdlc.workspaces)
+
+  tags = {
+    Name = terraform.workspace
+  }
 }
 
 # Providing a reference to our default subnets
@@ -25,6 +29,23 @@ resource "aws_default_subnet" "default_subnet_c" {
   availability_zone = "eu-west-1c"
   tags = {
     Name = "${terraform.workspace} C"
+  }
+}
+
+data "aws_vpc" "network" {
+  provider = aws.root
+}
+
+resource "aws_subnet" "deployment" {
+  provider = aws.root
+  for_each = toset(local.configuration.sdlc.environments)
+
+  availability_zone = "eu-west-1${local.configuration.availability_zone}"
+  vpc_id            = data.aws_vpc.network.id
+  cidr_block        = local.configuration.cidr_block
+
+  tags = {
+    Name = "Deployment (${terraform.workspace})"
   }
 }
 

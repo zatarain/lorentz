@@ -6,6 +6,20 @@ locals {
     development = "beta."
   })
 
+  availability_zone = tomap({
+    production  = "c"
+    default     = "c"
+    staging     = "b"
+    development = "a"
+  })
+
+  cidr_block = tomap({
+    production  = "172.31.90.0/20"
+    default     = "172.31.90.0/20"
+    staging     = "172.31.64.0/20"
+    development = "172.31.48.0/20"
+  })
+
   settings = tomap({
     default = jsonencode({
       state = {
@@ -22,7 +36,9 @@ locals {
         domains = ["zatara.in"]
         zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
       }
-      load_balancers = ["default"]
+      load_balancers    = ["default"]
+      availability_zone = local.availability_zone[terraform.workspace]
+      cidr_block        = local.cidr_block[terraform.workspace]
     })
   })
 
@@ -41,7 +57,9 @@ locals {
       domains = []
       zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
     }
-    load_balancers = []
+    load_balancers    = []
+    availability_zone = local.availability_zone[terraform.workspace]
+    cidr_block        = local.cidr_block[terraform.workspace]
   })
 
   configuration = jsondecode(lookup(local.settings, terraform.workspace, local.environments))
