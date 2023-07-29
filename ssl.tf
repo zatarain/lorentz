@@ -114,7 +114,7 @@ resource "aws_acm_certificate" "entry-point" {
   }
 }
 
-/**
+/**/
 locals {
   entry-point-validation-records = flatten([
     for key, certificate in aws_acm_certificate.entry-point : [

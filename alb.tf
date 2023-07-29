@@ -97,8 +97,8 @@ data "aws_alb" "entry-point" {
   name     = "entry-point"
 }
 
-# data "aws_alb_listener" "secure-entry-point" {
-#   provider          = aws.root
-#   load_balancer_arn = data.aws_alb.entry-point.arn
-#   port              = 443
-# }
+data "aws_alb_listener" "secure-entry-point" {
+  provider          = aws.root
+  load_balancer_arn = data.aws_alb.entry-point.arn
+  port              = 443
+}

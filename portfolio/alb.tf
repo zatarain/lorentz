@@ -21,6 +21,10 @@ resource "aws_lb_target_group" "back-end-workers" {
     matcher = "200,301,302"
     path    = "/"
   }
+
+  tags = {
+    Environment = terraform.workspace
+  }
 }
 
 resource "aws_lb_listener" "api-listener" {
@@ -67,6 +71,12 @@ resource "aws_lb_listener_rule" "front-end" {
   }
 }
 
+# resource "aws_alb_listener_certificate" "front-end" {
+#   provider        = aws.root
+#   listener_arn    = var.secure-entry-point.arn
+#   certificate_arn = var.certificate.arn
+# }
+
 resource "aws_alb" "front-end" {
   name               = "${var.prefix}-web-alb" # Naming our load balancer
   load_balancer_type = "application"
@@ -89,6 +99,10 @@ resource "aws_lb_target_group" "front-end-workers" {
   health_check {
     matcher = "200,301,302"
     path    = "/"
+  }
+
+  tags = {
+    Environment = terraform.workspace
   }
 }
 
@@ -116,4 +130,33 @@ resource "aws_lb_listener" "web-listener" {
 #     type             = "forward"
 #     target_group_arn = aws_lb_target_group.front-end-workers.arn
 #   }
+# }
+
+resource "aws_resourcegroups_group" "workers" {
+  name = "${var.prefix}-workers"
+  resource_query {
+    query = <<JSON
+{
+  "ResourceTypeFilters": [
+    "AWS::ElasticLoadBalancingV2::TargetGroup"
+  ],
+  "TagFilters": [
+    {
+      "Key": "Environment",
+      "Values": ["${terraform.workspace}"]
+    }
+  ]
+}
+JSON
+  }
+}
+
+# resource "aws_resourcegroups_resource" "back-end" {
+#   group_arn    = aws_resourcegroups_group.workers.arn
+#   resource_arn = aws_lb_target_group.back-end-workers.arn
+# }
+
+# resource "aws_resourcegroups_resource" "front-end" {
+#   group_arn    = aws_resourcegroups_group.workers.arn
+#   resource_arn = aws_lb_target_group.front-end-workers.arn
 # }

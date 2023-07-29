@@ -56,8 +56,8 @@ variable "load-balancer" {
   })
 }
 
-# variable "secure-entry-point" {
-#   type = object({
-#     arn      = string
-#   })
-# }
+variable "secure-entry-point" {
+  type = object({
+    arn      = string
+  })
+}
