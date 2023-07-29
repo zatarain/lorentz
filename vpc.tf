@@ -44,7 +44,8 @@ resource "aws_vpc" "deployment" {
 
 data "aws_vpc" "network" {
   provider = aws.root
-  tags     = {
+
+  tags = {
     Name = "Deployment"
   }
 }
