@@ -47,6 +47,24 @@ resource "aws_lb_listener" "api-secure-listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.back-end-workers.arn
   }
+
+  depends_on = [ var.certificate ]
+}
+
+resource "aws_lb_listener_rule" "front-end" {
+  listener_arn = aws_lb_listener.api-secure-listener.arn
+  priority     = 99
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.front-end-workers.arn
+  }
+
+  condition {
+    host_header {
+      values = [var.domain]
+    }
+  }
 }
 
 resource "aws_alb" "front-end" {
@@ -88,14 +106,14 @@ resource "aws_lb_listener" "web-listener" {
   }
 }
 
-resource "aws_lb_listener" "web-secure-listener" {
-  load_balancer_arn = aws_alb.front-end.arn
-  protocol          = "HTTPS"
-  port              = 443
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.apex-certificate
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.front-end-workers.arn
-  }
-}
+# resource "aws_lb_listener" "web-secure-listener" {
+#   load_balancer_arn = aws_alb.front-end.arn
+#   protocol          = "HTTPS"
+#   port              = 443
+#   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+#   certificate_arn   = var.apex-certificate
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.front-end-workers.arn
+#   }
+# }
