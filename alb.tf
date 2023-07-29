@@ -80,7 +80,7 @@ resource "aws_alb_listener" "secure-entry-point" {
   protocol          = "HTTPS"
   port              = 443
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  # certificate_arn   = aws_acm_certificate.entry-point[each.value].arn
+  certificate_arn   = aws_acm_certificate.entry-point[one(local.configuration.dns.domains)].arn
   default_action {
     type = "fixed-response"
     fixed_response {
