@@ -24,8 +24,19 @@ variable "vpc" {
   })
 }
 
+variable "network" {
+  type = object({
+    id         = string
+    cidr_block = string
+  })
+}
+
 variable "subnets" {
   type = list(string)
+}
+
+variable "subnet" {
+  type = string
 }
 
 variable "wildcard-certificate" {
@@ -58,6 +69,26 @@ variable "load-balancer" {
 
 variable "secure-entry-point" {
   type = object({
-    arn      = string
+    arn = string
+  })
+}
+
+variable "task-runner" {
+  type = object({
+    arn  = string
+    name = string
+  })
+}
+
+variable "task-command-executor" {
+  type = object({
+    arn  = string
+    name = string
+  })
+}
+
+variable "alb-access" {
+  type = object({
+    id = string
   })
 }

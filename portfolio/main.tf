@@ -160,14 +160,14 @@ resource "aws_ecs_service" "api" {
   desired_count          = 2
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.back-end-workers.arn
+    target_group_arn = aws_alb_target_group.back-end.arn
     container_name   = aws_ecs_task_definition.api-run.family
     container_port   = 3000
   }
 
   network_configuration {
     assign_public_ip = true
-    subnets          = var.subnets
+    subnets          = [var.subnet]
 
     security_groups = [
       aws_security_group.alb-access.id,
@@ -222,14 +222,14 @@ resource "aws_ecs_service" "web" {
   desired_count          = 2
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.front-end-workers.arn
+    target_group_arn = aws_alb_target_group.front-end.arn
     container_name   = aws_ecs_task_definition.web-run.family
     container_port   = 5000
   }
 
   network_configuration {
     assign_public_ip = true
-    subnets          = var.subnets
+    subnets          = [var.subnet]
 
     security_groups = [
       aws_security_group.alb-access.id,

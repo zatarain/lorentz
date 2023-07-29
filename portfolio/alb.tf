@@ -46,7 +46,7 @@ resource "aws_lb_listener" "api-secure-listener" {
   protocol          = "HTTPS"
   port              = 443
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  # certificate_arn   = var.wildcard-certificate
+  certificate_arn   = var.wildcard-certificate
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.back-end-workers.arn
@@ -132,27 +132,56 @@ resource "aws_lb_listener" "web-listener" {
 #   }
 # }
 
-resource "aws_resourcegroups_group" "workers" {
-  name = "${var.prefix}-workers"
-  resource_query {
-    query = jsonencode({
-      ResourceTypeFilters = ["AWS::ElasticLoadBalancingV2::TargetGroup"],
-      TagFilters          = [
-        {
-          Key    = "Environment",
-          Values = [terraform.workspace],
-        }
-      ]
-    })
+resource "aws_alb_target_group" "back-end" {
+  provider    = aws.root
+  name        = "${var.prefix}-back-end-${terraform.workspace}"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.network.id
+
+  health_check {
+    matcher = "200,301,302"
+    path    = "/"
+  }
+
+  tags = {
+    Environment = terraform.workspace
   }
 }
 
-# resource "aws_resourcegroups_resource" "back-end" {
-#   group_arn    = aws_resourcegroups_group.workers.arn
-#   resource_arn = aws_lb_target_group.back-end-workers.arn
-# }
 
-# resource "aws_resourcegroups_resource" "front-end" {
-#   group_arn    = aws_resourcegroups_group.workers.arn
-#   resource_arn = aws_lb_target_group.front-end-workers.arn
-# }
+resource "aws_alb_target_group" "front-end" {
+  provider    = aws.root
+  name        = "${var.prefix}-front-end-${terraform.workspace}"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.network.id
+
+  health_check {
+    matcher = "200,301,302"
+    path    = "/"
+  }
+
+  tags = {
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_alb_listener_rule" "front-end" {
+  provider     = aws.root
+  listener_arn = var.secure-entry-point.arn
+  priority     = 99
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.front-end.arn
+  }
+
+  condition {
+    host_header {
+      values = [var.domain]
+    }
+  }
+}

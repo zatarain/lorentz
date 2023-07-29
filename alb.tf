@@ -3,8 +3,9 @@ resource "aws_alb" "entry-point" {
   name               = "entry-point" # Naming our load balancer
   load_balancer_type = "application"
 
-  # Referencing the default subnets
-  subnets = local.subnets.*.id
+  # Referencing the deployment subnets
+  subnets = data.aws_subnets.deployment.ids
+
   # Referencing the security group
   security_groups = [
     aws_security_group.entry-point[each.value].id,
@@ -14,6 +15,8 @@ resource "aws_alb" "entry-point" {
 # Creating a security group for load balancers
 resource "aws_security_group" "entry-point" {
   for_each = toset(local.configuration.load_balancers)
+  name     = "entry-point-from-world"
+  vpc_id   = data.aws_vpc.network.id
   ingress {
     from_port   = 80 # Allowing traffic in from port 80
     to_port     = 80
@@ -34,10 +37,16 @@ resource "aws_security_group" "entry-point" {
     protocol    = "-1"          # Allowing any outgoing protocol
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
+
+  tags = {
+    Name = "Entry Point from World"
+  }
 }
 
 resource "aws_security_group" "alb-access" {
   for_each = toset(local.configuration.load_balancers)
+  name     = "alb-access"
+  vpc_id   = data.aws_vpc.network.id
   ingress {
     from_port = 0
     to_port   = 0
@@ -54,6 +63,10 @@ resource "aws_security_group" "alb-access" {
     to_port     = 0             # Allowing any outgoing port
     protocol    = "-1"          # Allowing any outgoing protocol
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
+  }
+
+  tags = {
+    Name = "ALB Access"
   }
 }
 
@@ -101,4 +114,9 @@ data "aws_alb_listener" "secure-entry-point" {
   provider          = aws.root
   load_balancer_arn = data.aws_alb.entry-point.arn
   port              = 443
+}
+
+data "aws_security_group" "alb-access" {
+  name   = "alb-access"
+  vpc_id = data.aws_vpc.network.id
 }

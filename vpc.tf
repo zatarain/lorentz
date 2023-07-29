@@ -42,6 +42,11 @@ resource "aws_vpc" "deployment" {
   }
 }
 
+resource "aws_internet_gateway" "internet-access" {
+  for_each = toset(local.configuration.load_balancers)
+  vpc_id   = aws_vpc.deployment[each.value].id
+}
+
 data "aws_vpc" "network" {
   provider = aws.root
 
@@ -63,11 +68,20 @@ resource "aws_subnet" "deployment" {
   }
 }
 
+data "aws_subnets" "deployment" {
+  provider = aws.root
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.network.id]
+  }
+}
+
 resource "aws_ram_resource_share" "shared-networks" {
   provider = aws.root
   for_each = toset(local.configuration.sdlc.environments)
 
-  name                      = "shared-networks"
+  name                      = "Shared Networks - ${each.value}"
   allow_external_principals = false
 }
 
