@@ -135,19 +135,15 @@ resource "aws_lb_listener" "web-listener" {
 resource "aws_resourcegroups_group" "workers" {
   name = "${var.prefix}-workers"
   resource_query {
-    query = <<JSON
-{
-  "ResourceTypeFilters": [
-    "AWS::ElasticLoadBalancingV2::TargetGroup"
-  ],
-  "TagFilters": [
-    {
-      "Key": "Environment",
-      "Values": ["${terraform.workspace}"]
-    }
-  ]
-}
-JSON
+    query = jsonencode({
+      ResourceTypeFilters = ["AWS::ElasticLoadBalancingV2::TargetGroup"],
+      TagFilters          = [
+        {
+          Key    = "Environment",
+          Values = [terraform.workspace],
+        }
+      ]
+    })
   }
 }
 
