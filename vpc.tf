@@ -62,6 +62,30 @@ resource "aws_subnet" "deployment" {
   }
 }
 
+resource "aws_ram_resource_share" "shared-networks" {
+  provider = aws.root
+  for_each = toset(local.configuration.sdlc.environments)
+
+  name                      = "shared-networks"
+  allow_external_principals = false
+}
+
+resource "aws_ram_resource_association" "deployment-subnet" {
+  provider = aws.root
+  for_each = toset(local.configuration.sdlc.environments)
+
+  resource_arn       = aws_subnet.deployment[each.value].arn
+  resource_share_arn = aws_ram_resource_share.shared-networks[each.value].arn
+}
+
+resource "aws_ram_principal_association" "deployment-account" {
+  provider = aws.root
+  for_each = toset(local.configuration.sdlc.environments)
+
+  principal          = var.aws_env_id
+  resource_share_arn = aws_ram_resource_share.shared-networks[each.value].arn
+}
+
 locals {
   vpc = one(values(aws_default_vpc.default_vpc))
   subnets = [
