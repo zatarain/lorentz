@@ -32,8 +32,21 @@ resource "aws_default_subnet" "default_subnet_c" {
   }
 }
 
+resource "aws_vpc" "deployment" {
+  for_each = toset(local.configuration.load_balancers)
+
+  cidr_block = local.configuration.cidr_block
+
+  tags = {
+    Name = "Deployment"
+  }
+}
+
 data "aws_vpc" "network" {
   provider = aws.root
+  tags     = {
+    Name = "Deployment"
+  }
 }
 
 resource "aws_subnet" "deployment" {
