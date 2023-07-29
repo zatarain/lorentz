@@ -14,5 +14,11 @@ module "mycv" {
   wildcard-certificate = aws_acm_certificate.entry-point[local.kingdom.name].arn
   apex-certificate     = aws_acm_certificate.entry-point[local.kingdom.name].arn
 
-  certificate = aws_acm_certificate.entry-point[local.kingdom.name]
+  certificate   = aws_acm_certificate.entry-point[local.kingdom.name]
+  load-balancer = data.aws_alb.entry-point
+
+  providers = {
+    aws      = aws
+    aws.root = aws.root
+  }
 }

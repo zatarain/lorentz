@@ -114,7 +114,7 @@ resource "aws_acm_certificate" "entry-point" {
   }
 }
 
-/**/
+/**
 locals {
   entry-point-validation-records = flatten([
     for key, certificate in aws_acm_certificate.entry-point : [
@@ -133,7 +133,6 @@ output "entry-point-validation-records" {
   value = local.entry-point-validation-records
 }
 
-/**/
 resource "aws_route53_record" "entry-point-ssl" {
   for_each = {
     for record in local.entry-point-validation-records :
