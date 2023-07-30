@@ -64,6 +64,7 @@ variable "load-balancer" {
   type = object({
     arn      = string
     dns_name = string
+    zone_id  = string
   })
 }
 
