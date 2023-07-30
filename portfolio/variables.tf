@@ -73,3 +73,9 @@ variable "secure-entry-point" {
     arn      = string
   })
 }
+
+variable "alb-access" {
+  type = object({
+    id = string
+  })
+}

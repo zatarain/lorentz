@@ -59,9 +59,11 @@ resource "aws_subnet" "deployment" {
   provider = aws.root
   count    = length(local.configuration.cidr_block)
 
-  availability_zone = "eu-west-1${local.configuration.availability_zone[count.index]}"
-  vpc_id            = data.aws_vpc.network.id
-  cidr_block        = local.configuration.cidr_block[count.index]
+  vpc_id     = data.aws_vpc.network.id
+  cidr_block = local.configuration.cidr_block[count.index]
+
+  availability_zone       = "eu-west-1${local.configuration.availability_zone[count.index]}"
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "${terraform.workspace} - ${local.configuration.availability_zone[count.index]}"
