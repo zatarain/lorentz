@@ -59,36 +59,3 @@ variable "certificate" {
     arn = string
   })
 }
-
-variable "load-balancer" {
-  type = object({
-    arn      = string
-    dns_name = string
-  })
-}
-
-variable "secure-entry-point" {
-  type = object({
-    arn = string
-  })
-}
-
-variable "task-runner" {
-  type = object({
-    arn  = string
-    name = string
-  })
-}
-
-variable "task-command-executor" {
-  type = object({
-    arn  = string
-    name = string
-  })
-}
-
-variable "alb-access" {
-  type = object({
-    id = string
-  })
-}

@@ -149,31 +149,31 @@ resource "aws_iam_role_policy_attachment" "task-executor-access-to-secrets" {
   policy_arn = aws_iam_policy.secrets-access.arn
 }
 
-resource "aws_ecs_service" "api" {
-  name    = "${var.prefix}-api"
-  cluster = aws_ecs_cluster.portfolio.id
+# resource "aws_ecs_service" "api" {
+#   name    = "${var.prefix}-api"
+#   cluster = aws_ecs_cluster.portfolio.id
 
-  # Referencing the task our service will spin up
-  task_definition        = aws_ecs_task_definition.api-run.arn
-  launch_type            = "FARGATE"
-  enable_execute_command = true
-  desired_count          = 2
+#   # Referencing the task our service will spin up
+#   task_definition        = aws_ecs_task_definition.api-run.arn
+#   launch_type            = "FARGATE"
+#   enable_execute_command = true
+#   desired_count          = 2
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.back-end.arn
-    container_name   = aws_ecs_task_definition.api-run.family
-    container_port   = 3000
-  }
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.back-end-workers.arn
+#     container_name   = aws_ecs_task_definition.api-run.family
+#     container_port   = 3000
+#   }
 
-  network_configuration {
-    assign_public_ip = true
-    subnets          = [var.subnet]
+#   network_configuration {
+#     assign_public_ip = true
+#     subnets          = [var.subnet]
 
-    security_groups = [
-      aws_security_group.alb-access.id,
-    ]
-  }
-}
+#     security_groups = [
+#       aws_security_group.alb-access.id,
+#     ]
+#   }
+# }
 
 data "template_file" "front-end-task-definition" {
   template = file("${path.module}/task-definition.json.tpl")
@@ -211,28 +211,28 @@ resource "aws_ecs_task_definition" "web-run" {
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }
 
-resource "aws_ecs_service" "web" {
-  name    = "${var.prefix}-web"
-  cluster = aws_ecs_cluster.portfolio.id
+# resource "aws_ecs_service" "web" {
+#   name    = "${var.prefix}-web"
+#   cluster = aws_ecs_cluster.portfolio.id
 
-  # Referencing the task our service will spin up
-  task_definition        = aws_ecs_task_definition.web-run.arn
-  launch_type            = "FARGATE"
-  enable_execute_command = true
-  desired_count          = 2
+#   # Referencing the task our service will spin up
+#   task_definition        = aws_ecs_task_definition.web-run.arn
+#   launch_type            = "FARGATE"
+#   enable_execute_command = true
+#   desired_count          = 2
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.front-end.arn
-    container_name   = aws_ecs_task_definition.web-run.family
-    container_port   = 5000
-  }
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.front-end-workers.arn
+#     container_name   = aws_ecs_task_definition.web-run.family
+#     container_port   = 5000
+#   }
 
-  network_configuration {
-    assign_public_ip = true
-    subnets          = [var.subnet]
+#   network_configuration {
+#     assign_public_ip = true
+#     subnets          = [var.subnet]
 
-    security_groups = [
-      aws_security_group.alb-access.id,
-    ]
-  }
-}
+#     security_groups = [
+#       aws_security_group.alb-access.id,
+#     ]
+#   }
+# }

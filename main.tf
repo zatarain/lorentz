@@ -16,13 +16,7 @@ module "mycv" {
   wildcard-certificate = aws_acm_certificate.entry-point[local.kingdom.name].arn
   apex-certificate     = aws_acm_certificate.entry-point[local.kingdom.name].arn
 
-  certificate        = aws_acm_certificate.entry-point[local.kingdom.name]
-  load-balancer      = data.aws_alb.entry-point
-  secure-entry-point = data.aws_alb_listener.secure-entry-point
-  alb-access         = data.aws_security_group.alb-access
-
-  task-runner           = data.aws_iam_role.task-runner
-  task-command-executor = data.aws_iam_role.task-command-executor
+  certificate = aws_acm_certificate.entry-point[local.kingdom.name]
 
   providers = {
     aws      = aws
