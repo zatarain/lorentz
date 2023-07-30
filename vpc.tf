@@ -35,7 +35,7 @@ resource "aws_default_subnet" "default_subnet_c" {
 resource "aws_vpc" "deployment" {
   for_each = toset(local.configuration.networks)
 
-  cidr_block = local.configuration.cidr_block
+  cidr_block = "172.10.0.0/16"
 
   tags = {
     Name = "Deployment"
@@ -57,14 +57,14 @@ data "aws_vpc" "network" {
 
 resource "aws_subnet" "deployment" {
   provider = aws.root
-  for_each = toset(local.configuration.sdlc.environments)
+  count    = length(local.configuration.cidr_block)
 
-  availability_zone = "eu-west-1${local.configuration.availability_zone}"
+  availability_zone = "eu-west-1${local.configuration.availability_zone[count.index]}"
   vpc_id            = data.aws_vpc.network.id
-  cidr_block        = local.configuration.cidr_block
+  cidr_block        = local.configuration.cidr_block[count.index]
 
   tags = {
-    Name = "Deployment (${terraform.workspace})"
+    Name = "${terraform.workspace} - ${local.configuration.availability_zone[count.index]}"
   }
 }
 
@@ -87,10 +87,10 @@ resource "aws_ram_resource_share" "shared-networks" {
 
 resource "aws_ram_resource_association" "deployment-subnet" {
   provider = aws.root
-  for_each = toset(local.configuration.sdlc.environments)
+  count = length(aws_subnet.deployment)
 
-  resource_arn       = aws_subnet.deployment[each.value].arn
-  resource_share_arn = aws_ram_resource_share.shared-networks[each.value].arn
+  resource_arn       = aws_subnet.deployment[count.index].arn
+  resource_share_arn = aws_ram_resource_share.shared-networks[terraform.workspace].arn
 }
 
 resource "aws_ram_principal_association" "deployment-account" {

@@ -36,7 +36,7 @@ variable "subnets" {
 }
 
 variable "subnet" {
-  type = string
+  type = list(string)
 }
 
 variable "wildcard-certificate" {

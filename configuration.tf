@@ -7,17 +7,17 @@ locals {
   })
 
   availability_zone = tomap({
-    default     = "c"
-    production  = "c"
-    staging     = "b"
-    development = "a"
+    default     = []
+    production  = ["c", "b"]
+    staging     = ["b", "c"]
+    development = ["a", "b"]
   })
 
   cidr_block = tomap({
-    default     = "172.10.0.0/16"
-    production  = "172.10.32.0/20"
-    staging     = "172.10.16.0/20"
-    development = "172.10.0.0/20"
+    default     = []
+    production  = ["172.10.164.0/24", "172.10.180.0/24"]
+    staging     = ["172.10.132.0/24", "172.10.148.0/24"]
+    development = ["172.10.100.0/24", "172.10.116.0/24"]
   })
 
   settings = tomap({

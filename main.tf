@@ -8,7 +8,7 @@ module "mycv" {
   vpc      = local.vpc
   network  = data.aws_vpc.network
   subnets  = local.subnets.*.id
-  subnet   = aws_subnet.deployment[each.value].id
+  subnet   = aws_subnet.deployment.*.id
   postgres = {
     username = var.database_username
   }
