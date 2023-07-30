@@ -12,7 +12,7 @@ resource "aws_security_group" "entry-point" {
   }
 
   ingress {
-    from_port   = 443 # Allowing traffic in from port 80
+    from_port   = 443 # Allowing traffic in from port 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
