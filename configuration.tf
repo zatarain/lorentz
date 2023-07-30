@@ -36,7 +36,7 @@ locals {
         domains = ["zatara.in"]
         zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
       }
-      load_balancers    = ["default"]
+      networks          = ["default"]
       availability_zone = local.availability_zone[terraform.workspace]
       cidr_block        = local.cidr_block[terraform.workspace]
     })
@@ -57,7 +57,7 @@ locals {
       domains = []
       zones   = ["${local.zone_prefix[terraform.workspace]}zatara.in"]
     }
-    load_balancers    = []
+    networks          = []
     availability_zone = local.availability_zone[terraform.workspace]
     cidr_block        = local.cidr_block[terraform.workspace]
   })

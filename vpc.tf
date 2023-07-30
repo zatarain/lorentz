@@ -33,7 +33,7 @@ resource "aws_default_subnet" "default_subnet_c" {
 }
 
 resource "aws_vpc" "deployment" {
-  for_each = toset(local.configuration.load_balancers)
+  for_each = toset(local.configuration.networks)
 
   cidr_block = local.configuration.cidr_block
 
@@ -43,7 +43,7 @@ resource "aws_vpc" "deployment" {
 }
 
 resource "aws_internet_gateway" "internet-access" {
-  for_each = toset(local.configuration.load_balancers)
+  for_each = toset(local.configuration.networks)
   vpc_id   = aws_vpc.deployment[each.value].id
 }
 
