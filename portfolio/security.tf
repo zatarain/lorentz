@@ -71,14 +71,17 @@ resource "aws_secretsmanager_secret_version" "instagram" {
 
 # Creating a security group for database
 resource "aws_security_group" "database-connection" {
-  name = "PostgreSQL Connections"
+  name   = "PostgreSQL Connections"
+  vpc_id = var.network.id
+
+  # Allowing traffic in from the same VPC on port 5432
   ingress {
-    from_port   = 5432 # Allowing traffic in from port 80
+    from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [var.vpc.cidr_block]
+    cidr_blocks = [var.network.cidr_block]
     security_groups = [
-      aws_security_group.entry-point.id,
+      var.alb-group.id,
     ]
   }
 

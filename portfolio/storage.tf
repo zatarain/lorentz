@@ -7,7 +7,13 @@ resource aws_s3_bucket "cv-storage" {
 	}
 }
 
+resource "aws_db_subnet_group" "default" {
+  name       = "${terraform.workspace}-subnets"
+  subnet_ids = var.subnet
+}
+
 resource "aws_db_instance" "postgres" {
+	db_subnet_group_name				= aws_db_subnet_group.default.name
   allocated_storage           = 20
 	max_allocated_storage				= 100
   identifier                  = "${var.prefix}-postgres"
@@ -22,7 +28,9 @@ resource "aws_db_instance" "postgres" {
 	skip_final_snapshot         = true
 	vpc_security_group_ids			= [
 		aws_security_group.database-connection.id,
-		var.vpc.default_security_group_id,
+		# var.alb-group.id,
+		# var.vpc.default_security_group_id,
+		var.default-security-group.id,
 	]
 
 	depends_on = [

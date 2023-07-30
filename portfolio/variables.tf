@@ -31,6 +31,12 @@ variable "network" {
   })
 }
 
+variable "default-security-group" {
+  type = object({
+    id = string
+  })
+}
+
 variable "subnets" {
   type = list(string)
 }
@@ -66,16 +72,36 @@ variable "load-balancer" {
     dns_name = string
     zone_id  = string
   })
+  default = {
+    arn      = "value"
+    dns_name = "value"
+    zone_id  = "value"
+  }
 }
 
 variable "secure-entry-point" {
   type = object({
     arn      = string
   })
+  default = {
+    arn = "value"
+  }
 }
 
 variable "alb-access" {
   type = object({
     id = string
   })
+  default = {
+    id = "value"
+  }
+}
+
+variable "alb-group" {
+  type = object({
+    id = string
+  })
+  default = {
+    id = "value"
+  }
 }

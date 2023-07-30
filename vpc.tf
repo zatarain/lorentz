@@ -35,10 +35,32 @@ resource "aws_default_subnet" "default_subnet_c" {
 resource "aws_vpc" "deployment" {
   for_each = toset(local.configuration.networks)
 
-  cidr_block = "172.10.0.0/16"
+  cidr_block           = "172.10.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "Deployment"
+  }
+}
+
+resource "aws_security_group" "default" {
+  for_each = toset(local.configuration.sdlc.environments)
+  name     = "default-${each.value}"
+  vpc_id   = data.aws_vpc.network.id
+
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 

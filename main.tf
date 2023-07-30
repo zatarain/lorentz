@@ -20,6 +20,9 @@ module "mycv" {
   load-balancer      = aws_alb.entry-point[each.value]
   secure-entry-point = aws_alb_listener.secure-entry-point[each.value]
   alb-access         = aws_security_group.alb-access[each.value]
+  alb-group          = aws_security_group.entry-point[each.value]
+
+  default-security-group = aws_security_group.default[each.value]
 
   providers = {
     aws      = aws
