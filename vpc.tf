@@ -68,15 +68,6 @@ resource "aws_subnet" "deployment" {
   }
 }
 
-data "aws_subnets" "deployment" {
-  provider = aws.root
-
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.network.id]
-  }
-}
-
 resource "aws_ram_resource_share" "shared-networks" {
   provider = aws.root
   for_each = toset(local.configuration.sdlc.environments)

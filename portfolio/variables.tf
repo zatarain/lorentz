@@ -59,3 +59,16 @@ variable "certificate" {
     arn = string
   })
 }
+
+variable "load-balancer" {
+  type = object({
+    arn      = string
+    dns_name = string
+  })
+}
+
+variable "secure-entry-point" {
+  type = object({
+    arn      = string
+  })
+}

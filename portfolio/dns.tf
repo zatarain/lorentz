@@ -4,7 +4,7 @@ resource "aws_route53_record" "api" {
   type    = "A"
   alias {
     zone_id                = aws_alb.back-end.zone_id
-    name                   = aws_alb.back-end.dns_name
+    name                   = var.load-balancer.dns_name
     evaluate_target_health = true
   }
 }
@@ -15,7 +15,7 @@ resource "aws_route53_record" "root" {
   type    = "A"
   alias {
     zone_id                = aws_alb.front-end.zone_id
-    name                   = aws_alb.back-end.dns_name
+    name                   = var.load-balancer.dns_name
     evaluate_target_health = true
   }
 }

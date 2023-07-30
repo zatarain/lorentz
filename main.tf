@@ -16,7 +16,9 @@ module "mycv" {
   wildcard-certificate = aws_acm_certificate.entry-point[local.kingdom.name].arn
   apex-certificate     = aws_acm_certificate.entry-point[local.kingdom.name].arn
 
-  certificate = aws_acm_certificate.entry-point[local.kingdom.name]
+  certificate        = aws_acm_certificate.entry-point[local.kingdom.name]
+  load-balancer      = aws_alb.entry-point[each.value]
+  secure-entry-point = aws_alb_listener.secure-entry-point[each.value]
 
   providers = {
     aws      = aws
