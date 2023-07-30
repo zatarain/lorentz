@@ -1,3 +1,4 @@
+/**
 resource "aws_acm_certificate" "kingdom" {
   for_each          = toset(local.configuration.dns.zones)
   domain_name       = "*.${each.value}"
@@ -102,6 +103,7 @@ resource "aws_acm_certificate_validation" "realm-ssl" {
   certificate_arn         = aws_acm_certificate.realm[each.value].arn
   validation_record_fqdns = local.realm_validation_record_fqdns[each.value]
 }
+/**/
 
 resource "aws_acm_certificate" "entry-point" {
   for_each          = toset(local.configuration.dns.zones)
@@ -114,7 +116,6 @@ resource "aws_acm_certificate" "entry-point" {
   }
 }
 
-/**/
 locals {
   entry-point-validation-records = flatten([
     for key, certificate in aws_acm_certificate.entry-point : [
@@ -162,4 +163,3 @@ resource "aws_acm_certificate_validation" "entry-point-ssl" {
   certificate_arn         = aws_acm_certificate.entry-point[each.value].arn
   validation_record_fqdns = local.entry-point-validation-record-fqdns[each.value]
 }
-/**/

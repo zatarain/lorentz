@@ -45,13 +45,13 @@ variable "subnet" {
   type = list(string)
 }
 
-variable "wildcard-certificate" {
-  type = string
-}
+# variable "wildcard-certificate" {
+#   type = string
+# }
 
-variable "apex-certificate" {
-  type = string
-}
+# variable "apex-certificate" {
+#   type = string
+# }
 
 variable "postgres" {
   type      = object({
