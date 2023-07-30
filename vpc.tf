@@ -78,7 +78,7 @@ resource "aws_ram_resource_share" "shared-networks" {
 
 resource "aws_ram_resource_association" "deployment-subnet" {
   provider = aws.root
-  count = length(aws_subnet.deployment)
+  count    = length(aws_subnet.deployment)
 
   resource_arn       = aws_subnet.deployment[count.index].arn
   resource_share_arn = aws_ram_resource_share.shared-networks[terraform.workspace].arn
