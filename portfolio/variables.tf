@@ -16,14 +16,6 @@ variable "domain" {
   type = string
 }
 
-variable "vpc" {
-  type = object({
-    id                        = string
-    default_security_group_id = string
-    cidr_block                = string
-  })
-}
-
 variable "network" {
   type = object({
     id         = string
@@ -40,18 +32,6 @@ variable "default-security-group" {
 variable "subnets" {
   type = list(string)
 }
-
-variable "subnet" {
-  type = list(string)
-}
-
-# variable "wildcard-certificate" {
-#   type = string
-# }
-
-# variable "apex-certificate" {
-#   type = string
-# }
 
 variable "postgres" {
   type      = object({

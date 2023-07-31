@@ -9,7 +9,7 @@ resource aws_s3_bucket "cv-storage" {
 
 resource "aws_db_subnet_group" "default" {
   name       = "${terraform.workspace}-subnets"
-  subnet_ids = var.subnet
+  subnet_ids = var.subnets
 }
 
 resource "aws_db_instance" "postgres" {

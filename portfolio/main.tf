@@ -167,7 +167,7 @@ resource "aws_ecs_service" "api" {
 
   network_configuration {
     assign_public_ip = true
-    subnets          = var.subnet
+    subnets          = var.subnets
 
     security_groups = [
       var.alb-access.id,
@@ -229,7 +229,7 @@ resource "aws_ecs_service" "web" {
 
   network_configuration {
     assign_public_ip = true
-    subnets          = var.subnet
+    subnets          = var.subnets
 
     security_groups = [
       var.alb-access.id,
