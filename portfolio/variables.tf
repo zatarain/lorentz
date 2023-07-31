@@ -16,24 +16,21 @@ variable "domain" {
   type = string
 }
 
-variable "vpc" {
+variable "network" {
   type = object({
-    id                        = string
-    default_security_group_id = string
-    cidr_block                = string
+    id         = string
+    cidr_block = string
+  })
+}
+
+variable "default-security-group" {
+  type = object({
+    id = string
   })
 }
 
 variable "subnets" {
   type = list(string)
-}
-
-variable "wildcard-certificate" {
-  type = string
-}
-
-variable "apex-certificate" {
-  type = string
 }
 
 variable "postgres" {
@@ -53,11 +50,38 @@ variable "load-balancer" {
   type = object({
     arn      = string
     dns_name = string
+    zone_id  = string
   })
+  default = {
+    arn      = "value"
+    dns_name = "value"
+    zone_id  = "value"
+  }
 }
 
-# variable "secure-entry-point" {
-#   type = object({
-#     arn      = string
-#   })
-# }
+variable "secure-entry-point" {
+  type = object({
+    arn      = string
+  })
+  default = {
+    arn = "value"
+  }
+}
+
+variable "alb-access" {
+  type = object({
+    id = string
+  })
+  default = {
+    id = "value"
+  }
+}
+
+variable "alb-group" {
+  type = object({
+    id = string
+  })
+  default = {
+    id = "value"
+  }
+}
