@@ -12,8 +12,8 @@ locals {
   postgres_user = one(aws_db_instance.postgres.master_user_secret)
 }
 
-data "template_file" "back-end-task-definition" {
-  template = file("${path.module}/task-definition.json.tpl")
+data "template_file" "api" {
+  template = file("${path.module}/container-definition.json.tpl")
   vars = {
     CONTAINER = local.api_container
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
@@ -68,17 +68,6 @@ data "template_file" "back-end-task-definition" {
       },
     ])
   }
-}
-
-resource "aws_ecs_task_definition" "api-run" {
-  family                   = local.api_container # Naming our first task
-  container_definitions    = data.template_file.back-end-task-definition.rendered
-  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
-  network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 2048        # Specifying the memory our container requires
-  cpu                      = 1024        # Specifying the CPU our container requires
-  execution_role_arn       = aws_iam_role.task-runner.arn
-  task_role_arn            = aws_iam_role.task-command-executor.arn
 }
 
 resource "aws_iam_role" "task-runner" {
@@ -149,34 +138,8 @@ resource "aws_iam_role_policy_attachment" "task-executor-access-to-secrets" {
   policy_arn = aws_iam_policy.secrets-access.arn
 }
 
-resource "aws_ecs_service" "api" {
-  name    = "${var.prefix}-api"
-  cluster = aws_ecs_cluster.portfolio.id
-
-  # Referencing the task our service will spin up
-  task_definition        = aws_ecs_task_definition.api-run.arn
-  launch_type            = "FARGATE"
-  enable_execute_command = true
-  desired_count          = 2
-
-  load_balancer {
-    target_group_arn = aws_alb_target_group.back-end.arn
-    container_name   = aws_ecs_task_definition.api-run.family
-    container_port   = 3000
-  }
-
-  network_configuration {
-    assign_public_ip = true
-    subnets          = var.subnets
-
-    security_groups = [
-      var.alb-access.id,
-    ]
-  }
-}
-
-data "template_file" "front-end-task-definition" {
-  template = file("${path.module}/task-definition.json.tpl")
+data "template_file" "web" {
+  template = file("${path.module}/container-definition.json.tpl")
   vars = {
     CONTAINER = local.web_container
     IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
@@ -200,30 +163,44 @@ data "template_file" "front-end-task-definition" {
   }
 }
 
-resource "aws_ecs_task_definition" "web-run" {
-  family                   = local.web_container # Naming our first task
-  container_definitions    = data.template_file.front-end-task-definition.rendered
+data "template_file" "task-definition" {
+  template = file("${path.module}/task-definition.json.tpl")
+  vars = {
+    SERVICE = data.template_file.api.rendered
+    WEBSITE = data.template_file.web.rendered
+  }
+}
+
+resource "aws_ecs_task_definition" "website-run" {
+  family                   = var.name    # Naming our task
+  container_definitions    = data.template_file.task-definition.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 512         # Specifying the memory our container requires
-  cpu                      = 256         # Specifying the CPU our container requires
+  memory                   = 2048        # Specifying the memory our swarm requires
+  cpu                      = 1024        # Specifying the CPU our swarm requires
   execution_role_arn       = aws_iam_role.task-runner.arn
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }
 
-resource "aws_ecs_service" "web" {
-  name    = "${var.prefix}-web"
+resource "aws_ecs_service" "website" {
+  name    = "${var.prefix}-website"
   cluster = aws_ecs_cluster.portfolio.id
 
   # Referencing the task our service will spin up
-  task_definition        = aws_ecs_task_definition.web-run.arn
+  task_definition        = aws_ecs_task_definition.website-run.arn
   launch_type            = "FARGATE"
   enable_execute_command = true
   desired_count          = 2
 
   load_balancer {
+    target_group_arn = aws_alb_target_group.back-end.arn
+    container_name   = local.api_container
+    container_port   = 3000
+  }
+
+  load_balancer {
     target_group_arn = aws_alb_target_group.front-end.arn
-    container_name   = aws_ecs_task_definition.web-run.family
+    container_name   = local.web_container
     container_port   = 5000
   }
 
