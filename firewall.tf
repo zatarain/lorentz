@@ -5,6 +5,13 @@ resource "aws_security_group" "entry-point" {
   vpc_id   = data.aws_vpc.network.id
 
   ingress {
+    from_port   = 22 # Allowing traffic in from port 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+  }
+
+  ingress {
     from_port   = 80 # Allowing traffic in from port 80
     to_port     = 80
     protocol    = "tcp"
