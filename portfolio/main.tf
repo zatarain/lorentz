@@ -182,34 +182,34 @@ resource "aws_ecs_task_definition" "website-run" {
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }
 
-resource "aws_ecs_service" "website" {
-  name    = "${var.prefix}-website"
-  cluster = aws_ecs_cluster.portfolio.id
+# resource "aws_ecs_service" "website" {
+#   name    = "${var.prefix}-website"
+#   cluster = aws_ecs_cluster.portfolio.id
 
-  # Referencing the task our service will spin up
-  task_definition        = aws_ecs_task_definition.website-run.arn
-  launch_type            = "FARGATE"
-  enable_execute_command = true
-  desired_count          = 2
+#   # Referencing the task our service will spin up
+#   task_definition        = aws_ecs_task_definition.website-run.arn
+#   launch_type            = "FARGATE"
+#   enable_execute_command = true
+#   desired_count          = 2
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.back-end.arn
-    container_name   = local.api_container
-    container_port   = 3000
-  }
+#   load_balancer {
+#     target_group_arn = aws_alb_target_group.back-end.arn
+#     container_name   = local.api_container
+#     container_port   = 3000
+#   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.front-end.arn
-    container_name   = local.web_container
-    container_port   = 5000
-  }
+#   load_balancer {
+#     target_group_arn = aws_alb_target_group.front-end.arn
+#     container_name   = local.web_container
+#     container_port   = 5000
+#   }
 
-  network_configuration {
-    assign_public_ip = true
-    subnets          = var.subnets
+#   network_configuration {
+#     assign_public_ip = true
+#     subnets          = var.subnets
 
-    security_groups = [
-      var.alb-access.id,
-    ]
-  }
-}
+#     security_groups = [
+#       var.alb-access.id,
+#     ]
+#   }
+# }
