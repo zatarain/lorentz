@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "instagram" {
-  name = "${var.prefix}-instagram"
+  name = "${var.prefix}-instagram-token"
 }
 
 resource "aws_secretsmanager_secret_version" "instagram" {

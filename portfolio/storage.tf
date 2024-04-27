@@ -18,7 +18,7 @@ resource "aws_db_instance" "postgres" {
 	max_allocated_storage				= 100
   identifier                  = "${var.prefix}-postgres"
 	engine                      = "postgres"
-  engine_version              = "14.8"
+  engine_version              = "14.10"
   instance_class              = "db.t3.micro"
   manage_master_user_password = true
 	multi_az  									= false
