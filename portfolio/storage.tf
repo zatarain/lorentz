@@ -15,15 +15,15 @@ resource "aws_db_subnet_group" "default" {
 resource "aws_db_instance" "postgres" {
 	db_subnet_group_name				= aws_db_subnet_group.default.name
   allocated_storage           = 20
-	max_allocated_storage				= 100
+	max_allocated_storage				= 20
   identifier                  = "${var.prefix}-postgres"
 	engine                      = "postgres"
-  engine_version              = "14.10"
+  engine_version              = "16.1"
   instance_class              = "db.t3.micro"
   manage_master_user_password = true
 	multi_az  									= false
   username                    = var.postgres.username
-  parameter_group_name        = "default.postgres14"
+  parameter_group_name        = "default.postgres16"
 	publicly_accessible					= terraform.workspace == "development"
 	skip_final_snapshot         = true
 	vpc_security_group_ids			= [
