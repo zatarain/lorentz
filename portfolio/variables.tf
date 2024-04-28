@@ -16,6 +16,11 @@ variable "domain" {
   type = string
 }
 
+variable "region" {
+  type    = string
+  default = "eu-west-1"
+}
+
 variable "network" {
   type = object({
     id         = string

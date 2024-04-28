@@ -1,7 +1,7 @@
 {
 	"name": "${CONTAINER}",
 	"essential": true,
-	"memory": 512,
+	"memory": 384,
 	"cpu": 256,
 	"image": "${IMAGE}:${TAG}",
 	"environment": ${ENVIRONMENT},
@@ -12,6 +12,7 @@
 			"hostPort": ${PORT}
 		}
 	],
+	"logConfiguration": ${LOGS},
 	"linuxParameters": {
 		"initProcessEnabled": true
 	}

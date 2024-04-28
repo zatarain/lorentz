@@ -27,7 +27,7 @@ resource "aws_iam_instance_profile" "ecs-node" {
 }
 
 # --- ECS Launch Template ---
-
+/**
 data "aws_ssm_parameter" "ecs-image" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
@@ -35,7 +35,7 @@ data "aws_ssm_parameter" "ecs-image" {
 resource "aws_launch_template" "ecs-instance" {
   name_prefix            = "ecs-instance-"
   image_id               = data.aws_ssm_parameter.ecs-image.value
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.node-output.id]
 
   iam_instance_profile {
@@ -110,3 +110,4 @@ resource "aws_ecs_cluster_capacity_providers" "portfolio" {
     weight            = 100
   }
 }
+/**/
