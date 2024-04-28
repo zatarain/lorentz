@@ -34,3 +34,15 @@ resource "aws_security_group" "database-connection" {
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
+
+resource "aws_security_group" "node-output" {
+  name_prefix = "node-ouput-"
+  vpc_id      = var.network.id
+
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}

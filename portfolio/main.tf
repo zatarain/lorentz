@@ -174,7 +174,7 @@ data "template_file" "task-definition" {
 resource "aws_ecs_task_definition" "website-run" {
   family                   = var.name    # Naming our task
   container_definitions    = data.template_file.task-definition.rendered
-  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
+  requires_compatibilities = ["EC2"]     # Stating that we are using EC2 Instances as ECS Nodes
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 2048        # Specifying the memory our swarm requires
   cpu                      = 1024        # Specifying the CPU our swarm requires
@@ -188,10 +188,26 @@ resource "aws_ecs_service" "website" {
 
   # Referencing the task our service will spin up
   task_definition        = aws_ecs_task_definition.website-run.arn
-  launch_type            = "FARGATE"
   enable_execute_command = true
   desired_count          = 2
 
+  # Capacity and Life cycle
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.portfolio.name
+    base              = 1
+    weight            = 100
+  }
+
+  ordered_placement_strategy {
+    type  = "spread"
+    field = "attribute:ecs.availability-zone"
+  }
+
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
+  # Network and Load Balancer
   load_balancer {
     target_group_arn = aws_alb_target_group.back-end.arn
     container_name   = local.api_container
