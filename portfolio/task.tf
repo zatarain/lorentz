@@ -116,12 +116,12 @@ data "template_file" "task-definition" {
 }
 
 resource "aws_ecs_task_definition" "website-run" {
-  family                   = var.name    # Naming our task
+  family                   = var.name     # Naming our task
   container_definitions    = data.template_file.task-definition.rendered
-  requires_compatibilities = ["EC2"]     # Stating that we are using EC2 Instances as ECS Nodes
-  network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 768         # Specifying the memory our swarm requires
-  cpu                      = 512         # Specifying the CPU our swarm requires
+  requires_compatibilities = ["EC2"]      # Stating that we are using EC2 Instances as ECS Nodes
+  network_mode             = "awsvpc"     # Using awsvpc as our network mode as this is required for Fargate
+  memory                   = 1024         # Specifying the memory our swarm requires
+  cpu                      = 512          # Specifying the CPU our swarm requires
   execution_role_arn       = aws_iam_role.task-runner.arn
   task_role_arn            = aws_iam_role.task-command-executor.arn
 }

@@ -7,7 +7,6 @@ resource "aws_cloudwatch_log_group" "portfolio" {
   retention_in_days = 1
 }
 
-
 /**
 resource "aws_ecs_service" "website" {
   name    = "${var.prefix}-website"
@@ -51,7 +50,6 @@ resource "aws_ecs_service" "website" {
   }
 
   network_configuration {
-    # assign_public_ip = true
     subnets          = var.subnets
 
     security_groups = [

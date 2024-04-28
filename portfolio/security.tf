@@ -35,14 +35,22 @@ resource "aws_security_group" "database-connection" {
   }
 }
 
-resource "aws_security_group" "node-output" {
-  name_prefix = "node-ouput-"
+resource "aws_security_group" "worker-task-connection" {
+  name_prefix = "worker-task-"
+  description = "Allow all traffic within the VPC"
   vpc_id      = var.network.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.network.cidr_block]
+  }
 
   egress {
     from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }

@@ -1,7 +1,7 @@
 {
 	"name": "${CONTAINER}",
 	"essential": true,
-	"memory": 384,
+	"memory": 512,
 	"cpu": 256,
 	"image": "${IMAGE}:${TAG}",
 	"environment": ${ENVIRONMENT},

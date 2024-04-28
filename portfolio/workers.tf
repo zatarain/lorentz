@@ -1,45 +1,26 @@
-data "aws_iam_policy_document" "ecs_node_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "ecs-node" {
-  name_prefix        = "demo-ecs-node-role"
-  assume_role_policy = data.aws_iam_policy_document.ecs_node_policy.json
-}
-
-resource "aws_iam_role_policy_attachment" "ecs-node-role-policy" {
-  role       = aws_iam_role.ecs-node.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-}
-
-resource "aws_iam_instance_profile" "ecs-node" {
-  name_prefix = "ecs-node"
+resource "aws_iam_instance_profile" "ecs-worker" {
+  name_prefix = "ecs-worker"
   path        = "/ecs/instance/"
-  role        = aws_iam_role.ecs-node.name
+  role        = aws_iam_role.ecs-worker.name
 }
 
-# --- ECS Launch Template ---
-/**
 data "aws_ssm_parameter" "ecs-image" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
+/**
 resource "aws_launch_template" "ecs-instance" {
   name_prefix            = "ecs-instance-"
   image_id               = data.aws_ssm_parameter.ecs-image.value
-  instance_type          = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.node-output.id]
+  instance_type          = "t3.small"
+  vpc_security_group_ids = [var.alb-access.id]
 
   iam_instance_profile {
-    arn = aws_iam_instance_profile.ecs-node.arn
+    arn = aws_iam_instance_profile.ecs-worker.arn
+  }
+
+  metadata_options {
+    http_protocol_ipv6 = "disabled"
   }
 
   monitoring {
@@ -53,8 +34,7 @@ resource "aws_launch_template" "ecs-instance" {
   )
 }
 
-# --- ECS ASG ---
-
+/**
 resource "aws_autoscaling_group" "cluster" {
   name_prefix               = "${var.name}-"
   vpc_zone_identifier       = var.subnets
@@ -81,8 +61,6 @@ resource "aws_autoscaling_group" "cluster" {
     propagate_at_launch = true
   }
 }
-
-# --- ECS Capacity Provider ---
 
 resource "aws_ecs_capacity_provider" "portfolio" {
   name = var.name
