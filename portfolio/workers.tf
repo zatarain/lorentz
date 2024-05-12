@@ -8,12 +8,22 @@ data "aws_ssm_parameter" "ecs-image" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
-/**
+/**/
+data "local_file" "ec2-public-key" {
+  filename = "/home/ulises/.ssh/id_rsa.pub"
+}
+
+resource "aws_key_pair" "ec2-ecs-worker" {
+  key_name   = "ec2-ecs-worker"
+  public_key = data.local_file.ec2-public-key.content
+}
+
 resource "aws_launch_template" "ecs-instance" {
   name_prefix            = "ecs-instance-"
   image_id               = data.aws_ssm_parameter.ecs-image.value
   instance_type          = "t3.small"
   vpc_security_group_ids = [var.alb-access.id]
+  key_name               = aws_key_pair.ec2-ecs-worker.key_name
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.ecs-worker.arn
@@ -34,7 +44,7 @@ resource "aws_launch_template" "ecs-instance" {
   )
 }
 
-/**
+/**/
 resource "aws_autoscaling_group" "cluster" {
   name_prefix               = "${var.name}-"
   vpc_zone_identifier       = var.subnets

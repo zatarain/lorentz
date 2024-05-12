@@ -116,6 +116,30 @@ resource "aws_ram_principal_association" "deployment-account" {
   resource_share_arn = aws_ram_resource_share.shared-networks[each.value].arn
 }
 
+resource "aws_route_table" "public-access" {
+  provider = aws.root
+  for_each = toset(local.configuration.networks)
+
+  vpc_id   = data.aws_vpc.network.id
+
+  tags   = {
+    Name = "deployment-public-access"
+  }
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.internet-access[each.value].id
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  provider = aws.root
+  count = length(local.route-associations)
+
+  subnet_id      = local.route-associations[count.index][0]
+  route_table_id = aws_route_table.public-access[local.route-associations[count.index][1]].id
+}
+
 locals {
   vpc = one(values(aws_default_vpc.default_vpc))
   subnets = [
@@ -123,4 +147,5 @@ locals {
     one(values(aws_default_subnet.default_subnet_b)),
     one(values(aws_default_subnet.default_subnet_c)),
   ]
+  route-associations = setproduct(aws_subnet.deployment[*].id, keys(aws_route_table.public-access))
 }

@@ -88,7 +88,7 @@ data "template_file" "web" {
       },
 			{
 				name  = "API_URL",
-				value = "https://api.${var.domain}"
+				value = "http://localhost:3000"
 			},
 			{
 				name  = "NODE_ENV",

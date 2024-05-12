@@ -1,4 +1,4 @@
-/**
+/**/
 resource "aws_alb_target_group" "back-end" {
   name        = "${var.prefix}-back-end"
   port        = 80
