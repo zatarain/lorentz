@@ -140,6 +140,37 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public-access[local.route-associations[count.index][1]].id
 }
 
+data "aws_internet_gateway" "environment-internet" {
+  filter {
+    name   = "attachment.vpc-id"
+    values = [local.vpc.id]
+  }
+}
+
+resource "aws_route_table" "public-access-environment" {
+  for_each = toset(local.configuration.sdlc.workspaces)
+
+  vpc_id   = local.vpc.id
+
+  tags   = {
+    Name = "deployment-public-access-${each.value}"
+  }
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = data.aws_internet_gateway.environment-internet.id
+  }
+}
+
+resource "aws_route_table_association" "public-environment" {
+  count = length(local.environment-route-associations)
+
+  subnet_id      = local.environment-route-associations[count.index][0]
+  route_table_id = aws_route_table.public-access-environment[
+    local.environment-route-associations[count.index][1]
+  ].id
+}
+
 locals {
   vpc = one(values(aws_default_vpc.default_vpc))
   subnets = [
@@ -148,4 +179,5 @@ locals {
     one(values(aws_default_subnet.default_subnet_c)),
   ]
   route-associations = setproduct(aws_subnet.deployment[*].id, keys(aws_route_table.public-access))
+  environment-route-associations = setproduct(local.subnets[*].id, keys(aws_route_table.public-access-environment))
 }

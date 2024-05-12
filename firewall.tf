@@ -46,6 +46,14 @@ resource "aws_security_group" "alb-access" {
     ]
   }
 
+  # Allow to connect via SSH
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
