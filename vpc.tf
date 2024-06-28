@@ -171,6 +171,24 @@ resource "aws_route_table_association" "public-environment" {
   ].id
 }
 
+resource "aws_eip" "nat" {
+  count    = length(aws_subnet.deployment)
+  provider = aws.root
+  domain   = "vpc"
+}
+
+resource "aws_nat_gateway" "main" {
+  provider      = aws.root
+  count         = length(aws_subnet.deployment)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.deployment[count.index].id
+
+  tags = {
+    Name      = "${terraform.workspace} NAT"
+    Terraform = true
+  }
+}
+
 locals {
   vpc = one(values(aws_default_vpc.default_vpc))
   subnets = [

@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "portfolio" {
   retention_in_days = 1
 }
 
-/**/
+/**
 resource "aws_ecs_service" "website" {
   name    = "${var.prefix}-website"
   cluster = aws_ecs_cluster.portfolio.id
