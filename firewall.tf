@@ -1,3 +1,4 @@
+/**
 # Creating a security group for load balancers
 resource "aws_security_group" "entry-point" {
   for_each = toset(local.configuration.sdlc.environments)
@@ -57,3 +58,4 @@ resource "aws_security_group" "alb-access" {
     Name = "ALB Access"
   }
 }
+/**/

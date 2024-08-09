@@ -1,3 +1,4 @@
+/**
 # Providing a reference to our default VPC
 resource "aws_default_vpc" "default_vpc" {
   for_each = toset(local.configuration.sdlc.workspaces)
@@ -124,3 +125,4 @@ locals {
     one(values(aws_default_subnet.default_subnet_c)),
   ]
 }
+/**/
