@@ -22,7 +22,6 @@ locals {
 
 resource "aws_route53_record" "crm-code" {
   for_each = toset(local.configuration.sdlc.environments)
-  provider = aws.root
   zone_id  = local.kingdom.zone_id
   name     = local.mail-server == "" ? "@" : local.mail-server
   type     = "TXT"
@@ -32,7 +31,6 @@ resource "aws_route53_record" "crm-code" {
 
 resource "aws_route53_record" "crm-dkim" {
   for_each = toset(local.configuration.sdlc.environments)
-  provider = aws.root
   zone_id  = local.kingdom.zone_id
   name     = "mail._domainkey.${local.mail-server}"
   type     = "TXT"
@@ -42,7 +40,6 @@ resource "aws_route53_record" "crm-dkim" {
 
 resource "aws_route53_record" "crm-dmarc" {
   for_each = toset(local.configuration.sdlc.environments)
-  provider = aws.root
   zone_id  = local.kingdom.zone_id
   name     = "_dmarc.${local.mail-server}"
   type     = "TXT"
