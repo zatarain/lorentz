@@ -1,3 +1,4 @@
+/*
 module "mycv" {
   for_each = toset(local.configuration.sdlc.environments)
   source   = "./portfolio"
@@ -24,3 +25,4 @@ module "mycv" {
     aws.root = aws.root
   }
 }
+/**/

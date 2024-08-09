@@ -1,3 +1,4 @@
+/**
 resource "aws_alb" "entry-point" {
   for_each           = toset(local.configuration.sdlc.environments)
   name               = "entry-point" # Naming our load balancer
@@ -45,3 +46,4 @@ resource "aws_alb_listener" "secure-entry-point" {
   }
   # depends_on = [ aws_acm_certificate.entry-point[each.value] ]
 }
+/**/
