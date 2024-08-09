@@ -20,28 +20,25 @@ locals {
 }
 
 resource "aws_route53_record" "crm-code" {
-  for_each = toset(local.configuration.sdlc.environments)
-  zone_id  = local.kingdom.zone_id
-  name     = ""
-  type     = "TXT"
-  ttl      = 172800
-  records  = [local.mail-secret["code"]]
+  zone_id = local.kingdom.zone_id
+  name    = ""
+  type    = "TXT"
+  ttl     = 172800
+  records = [local.mail-secret["code"]]
 }
 
 resource "aws_route53_record" "crm-dkim" {
-  for_each = toset(local.configuration.sdlc.environments)
-  zone_id  = local.kingdom.zone_id
-  name     = "mail._domainkey"
-  type     = "TXT"
-  ttl      = 172800
-  records  = [local.mail-secret["dkim"]]
+  zone_id = local.kingdom.zone_id
+  name    = "mail._domainkey"
+  type    = "TXT"
+  ttl     = 172800
+  records = [local.mail-secret["dkim"]]
 }
 
 resource "aws_route53_record" "crm-dmarc" {
-  for_each = toset(local.configuration.sdlc.environments)
-  zone_id  = local.kingdom.zone_id
-  name     = "_dmarc"
-  type     = "TXT"
-  ttl      = 172800
-  records  = [local.mail-secret["dmarc"]]
+  zone_id = local.kingdom.zone_id
+  name    = "_dmarc"
+  type    = "TXT"
+  ttl     = 172800
+  records = [local.mail-secret["dmarc"]]
 }
