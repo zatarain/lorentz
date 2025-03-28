@@ -20,7 +20,7 @@ jobs:
         name: Name for Terraform Workspace and GitHub Environment
         run: |
           name=default
-          environtment=''
+          environment=''
           if [ "$BRANCH" = "main" ]; then
             name=production
             environment=${name^}
