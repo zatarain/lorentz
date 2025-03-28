@@ -26,3 +26,9 @@ module "mycv" {
   }
 }
 /**/
+
+data "aws_availability_zones" "available" {}
+
+locals {
+  cluster_name = "latte-${terraform.workspace}"
+}
