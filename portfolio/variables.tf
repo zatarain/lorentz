@@ -34,7 +34,7 @@ variable "subnets" {
 }
 
 variable "postgres" {
-  type      = object({
+  type = object({
     username = string
   })
   sensitive = true
@@ -61,7 +61,7 @@ variable "load-balancer" {
 
 variable "secure-entry-point" {
   type = object({
-    arn      = string
+    arn = string
   })
   default = {
     arn = "value"
