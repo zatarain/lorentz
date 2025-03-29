@@ -7,9 +7,15 @@ module "eks" {
   subnet_ids      = var.vpc.private_subnets
 
   cluster_endpoint_public_access = true
-  create_iam_role                = true
-  create_node_iam_role           = true
+  create_iam_role                = false
+  create_node_iam_role           = false
 
+  iam_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github"
+  iam_role_additional_policies = {
+    "AmazonEKSClusterPolicy" = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+    "AmazonEKSServicePolicy" = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+    "AmazonEKSAdminPolicy"   = "arn:aws:iam::aws:policy/AmazonEKSAdminPolicy"
+  }
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
   }
@@ -24,38 +30,5 @@ module "eks" {
     }
   }
 }
-/**
-resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodeMinimalPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
-  role       = module.eks.node_iam_role_name
-}
 
-resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryPullOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
-  role       = module.eks.node_iam_role_name
-}
-/**/
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = module.eks.cluster_iam_role_name
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSComputePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy"
-  role       = module.eks.cluster_iam_role_name
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSBlockStoragePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy"
-  role       = module.eks.cluster_iam_role_name
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSLoadBalancingPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy"
-  role       = module.eks.cluster_iam_role_name
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSNetworkingPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
-  role       = module.eks.cluster_iam_role_name
-}
+data "aws_caller_identity" "current" {}
