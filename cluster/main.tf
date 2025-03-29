@@ -10,7 +10,7 @@ module "eks" {
   create_iam_role                = false
   create_node_iam_role           = false
 
-  iam_role_arn = data.aws_caller_identity.current.arn
+  iam_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github"
   iam_role_additional_policies = {
     "AmazonEKSClusterPolicy" = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
     "AmazonEKSServicePolicy" = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
