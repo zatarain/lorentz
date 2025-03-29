@@ -49,11 +49,11 @@ jobs:
       TF_VAR_aws_env_id: ${{ secrets.TF_VAR_AWS_ENV_ID }}
       TF_VAR_database_username: ${{ secrets.DATABASE_USERNAME }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: '1.11.3'
     - name: Lint check
