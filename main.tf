@@ -4,7 +4,7 @@ locals {
 
 module "cluster" {
   source   = "./cluster"
-  for_each = toset(local.configuration.sdlc.workspaces)
+  for_each = toset(local.configuration.sdlc.environments)
   name     = local.cluster_name
   vpc      = module.vpc[each.value]
 
