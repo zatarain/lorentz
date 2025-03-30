@@ -11,11 +11,8 @@ module "eks" {
   create_node_iam_role           = false
 
   iam_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github"
-  iam_role_additional_policies = {
-    "AmazonEKSClusterPolicy" = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-    "AmazonEKSServicePolicy" = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-    "AmazonEKSAdminPolicy"   = "arn:aws:iam::aws:policy/AmazonEKSAdminPolicy"
-  }
+
+  enable_cluster_creator_admin_permissions = true
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
   }
