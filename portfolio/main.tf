@@ -24,14 +24,14 @@ data "template_file" "api" {
         name  = "AWS_ENVIRONMENT"
         value = terraform.workspace
       },
-			{
-				name  = "AWS_REGION"
-				value = "eu-west-1"
-			},
-			{
-				name  = "RAILS_ENV"
-				value = "production"
-			},
+      {
+        name  = "AWS_REGION"
+        value = "eu-west-1"
+      },
+      {
+        name  = "RAILS_ENV"
+        value = "production"
+      },
       {
         name  = "INSTAGRAM_REDIRECT_URI"
         value = "https://${var.domain}"
@@ -47,23 +47,23 @@ data "template_file" "api" {
     ])
     SECRETS = jsonencode([
       {
-        name  = "INSTAGRAM_CLIENT_ID"
+        name      = "INSTAGRAM_CLIENT_ID"
         valueFrom = "${aws_secretsmanager_secret.instagram.arn}:id::"
       },
       {
-        name  = "INSTAGRAM_CLIENT_SECRET"
+        name      = "INSTAGRAM_CLIENT_SECRET"
         valueFrom = "${aws_secretsmanager_secret.instagram.arn}:key::"
       },
       {
-        name  = "INSTAGRAM_ACCESS_TOKEN"
+        name      = "INSTAGRAM_ACCESS_TOKEN"
         valueFrom = "${aws_secretsmanager_secret.instagram.arn}:token::"
       },
       {
-        name  = "POSTGRES_USERNAME"
+        name      = "POSTGRES_USERNAME"
         valueFrom = "${local.postgres_user.secret_arn}:username::"
       },
       {
-        name  = "POSTGRES_PASSWORD"
+        name      = "POSTGRES_PASSWORD"
         valueFrom = "${local.postgres_user.secret_arn}:password::"
       },
     ])
@@ -147,17 +147,17 @@ data "template_file" "web" {
     PORT      = 5000
     ENVIRONMENT = jsonencode([
       {
-        name = "AWS_ENVIRONMENT"
+        name  = "AWS_ENVIRONMENT"
         value = terraform.workspace
       },
-			{
-				name= "API_URL",
-				value= "https://api.${var.domain}"
-			},
-			{
-				name= "NODE_ENV",
-				value= "production"
-			},
+      {
+        name  = "API_URL",
+        value = "https://api.${var.domain}"
+      },
+      {
+        name  = "NODE_ENV",
+        value = "production"
+      },
     ])
     SECRETS = jsonencode([])
   }
@@ -172,7 +172,7 @@ data "template_file" "task-definition" {
 }
 
 resource "aws_ecs_task_definition" "website-run" {
-  family                   = var.name    # Naming our task
+  family                   = var.name # Naming our task
   container_definitions    = data.template_file.task-definition.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate

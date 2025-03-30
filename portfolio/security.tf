@@ -3,10 +3,10 @@ resource "aws_secretsmanager_secret" "instagram" {
 }
 
 resource "aws_secretsmanager_secret_version" "instagram" {
-  secret_id     = aws_secretsmanager_secret.instagram.id
+  secret_id = aws_secretsmanager_secret.instagram.id
   secret_string = jsonencode({
-    id = "change me"
-    key = "change me"
+    id    = "change me"
+    key   = "change me"
     token = "change me"
   })
 }

@@ -1,3 +1,3 @@
-bucket         = "lorentz-state"
-key            = "lorentz.tfstate"
-dynamodb_table = "lorentz-state"
+bucket       = "lorentz-state"
+key          = "lorentz.tfstate"
+use_lockfile = true
