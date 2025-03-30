@@ -20,10 +20,10 @@ module "eks" {
   eks_managed_node_groups = {
     general = {
       name           = "general"
-      instance_types = ["t3.small"]
+      instance_types = ["t3.nano"]
       min_size       = 1
-      max_size       = 2
-      desired_size   = 1
+      max_size       = 5
+      desired_size   = 2
     }
   }
 }
