@@ -9,36 +9,21 @@ resource "aws_acm_certificate" "entry-point" {
   }
 }
 
-locals {
-  entry-point-validation-records = flatten([
-    for key, certificate in aws_acm_certificate.entry-point : [
-      for option in certificate.domain_validation_options : {
-        domain  = option.domain_name
-        name    = option.resource_record_name
-        record  = option.resource_record_value
-        type    = option.resource_record_type
-        zone_id = aws_route53_zone.kingdom[key].zone_id
-      }
-    ]
-  ])
-}
-
-output "entry-point-validation-records" {
-  value = local.entry-point-validation-records
-}
-
 resource "aws_route53_record" "entry-point-ssl" {
   for_each = {
-    for record in local.entry-point-validation-records :
-    "${record.type}/${record.name}/${record.domain}" => record
+    for domain in local.configuration.dns.zones :
+    domain => one([
+      for option in aws_acm_certificate.entry-point[domain].domain_validation_options :
+      option if option.domain_name == domain
+    ])
   }
 
   allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
+  name            = each.value.resource_record_name
+  records         = [each.value.resource_record_value]
   ttl             = 60
-  type            = each.value.type
-  zone_id         = each.value.zone_id
+  type            = each.value.resource_record_type
+  zone_id         = aws_route53_zone.kingdom[each.key].zone_id
 }
 
 locals {
