@@ -12,3 +12,7 @@ provider "aws" {
   region = var.aws_region
   alias  = "root"
 }
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}

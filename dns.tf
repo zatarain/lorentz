@@ -3,11 +3,12 @@ resource "aws_route53_delegation_set" "dns" {
 }
 
 resource "aws_route53domains_registered_domain" "realm" {
-  for_each    = toset(local.configuration.dns.domains)
-  domain_name = each.value
+  for_each      = toset(local.configuration.dns.domains)
+  domain_name   = each.value
+  transfer_lock = false
 
   dynamic "name_server" {
-    for_each = toset(aws_route53_delegation_set.dns.name_servers)
+    for_each = local.name_servers
     content {
       name = name_server.value
     }
@@ -39,6 +40,15 @@ resource "aws_route53_record" "kingdom" {
   ttl      = 172800
   records  = aws_route53_zone.kingdom[each.value].name_servers
 }
+
+# resource "cloudflare_dns_record" "example_dns_record" {
+#   zone_id = "0c8ccc5d384d13bbd1e9bfd7b28de613"
+#   name = "ulises.zatara.in"
+#   ttl = 3600
+#   type = "A"
+#   comment = "Pointing to local host"
+#   content = "127.0.0.1"
+# }
 
 locals {
   kingdom = one(values(aws_route53_zone.kingdom))
