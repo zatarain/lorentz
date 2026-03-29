@@ -1,0 +1,28 @@
+locals {
+  web_container = "${var.prefix}-web-run"
+}
+
+data "template_file" "web" {
+  template = file("${path.module}/container-definition.json.tpl")
+  vars = {
+    CONTAINER = local.web_container
+    IMAGE     = replace(aws_ecr_repository.image.repository_url, "https://", "")
+    TAG       = "front-end"
+    PORT      = 5000
+    ENVIRONMENT = jsonencode([
+      {
+        name  = "AWS_ENVIRONMENT"
+        value = terraform.workspace
+      },
+      {
+        name  = "API_URL",
+        value = "https://api.${var.domain}"
+      },
+      {
+        name  = "NODE_ENV",
+        value = "production"
+      },
+    ])
+    SECRETS = jsonencode([])
+  }
+}
