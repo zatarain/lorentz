@@ -21,16 +21,24 @@ variable "network" {
     id         = string
     cidr_block = string
   })
+  default = {
+    id         = "value"
+    cidr_block = "0.0.0.0/0"
+  }
 }
 
 variable "default-security-group" {
   type = object({
     id = string
   })
+  default = {
+    id = "value"
+  }
 }
 
 variable "subnets" {
-  type = list(string)
+  type    = list(string)
+  default = []
 }
 
 variable "postgres" {
@@ -38,6 +46,9 @@ variable "postgres" {
     username = string
   })
   sensitive = true
+  default = {
+    username = "postgres"
+  }
 }
 
 variable "certificate" {
