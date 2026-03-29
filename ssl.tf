@@ -35,9 +35,9 @@ locals {
   }
 }
 
-resource "aws_acm_certificate_validation" "entry-point-ssl" {
-  for_each = toset(local.configuration.dns.zones)
+# resource "aws_acm_certificate_validation" "entry-point-ssl" {
+#   for_each = toset(local.configuration.dns.zones)
 
-  certificate_arn         = aws_acm_certificate.entry-point[each.value].arn
-  validation_record_fqdns = local.entry-point-validation-record-fqdns[each.value]
-}
+#   certificate_arn         = aws_acm_certificate.entry-point[each.value].arn
+#   validation_record_fqdns = local.entry-point-validation-record-fqdns[each.value]
+# }
