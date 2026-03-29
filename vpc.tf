@@ -1,6 +1,6 @@
 module "vpc" {
   source   = "terraform-aws-modules/vpc/aws"
-  version  = "5.19.0"
+  version  = "6.0.1"
   for_each = toset(local.configuration.sdlc.environments)
   name     = each.value
 
