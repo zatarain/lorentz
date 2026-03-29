@@ -1,0 +1,50 @@
+data "template_file" "task-definition" {
+  template = file("${path.module}/task-definition.json.tpl")
+  vars = {
+    SERVICE = data.template_file.api.rendered
+    WEBSITE = data.template_file.web.rendered
+  }
+}
+
+resource "aws_ecs_task_definition" "website-run" {
+  family                   = var.name # Naming our task
+  container_definitions    = data.template_file.task-definition.rendered
+  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
+  network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
+  memory                   = 2048        # Specifying the memory our swarm requires
+  cpu                      = 1024        # Specifying the CPU our swarm requires
+  execution_role_arn       = aws_iam_role.task-runner.arn
+  task_role_arn            = aws_iam_role.task-command-executor.arn
+}
+
+resource "aws_ecs_service" "website" {
+  name    = "${var.prefix}-website"
+  cluster = aws_ecs_cluster.portfolio.id
+
+  # Referencing the task our service will spin up
+  task_definition        = aws_ecs_task_definition.website-run.arn
+  launch_type            = "FARGATE"
+  enable_execute_command = true
+  desired_count          = 2
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.back-end.arn
+    container_name   = local.api_container
+    container_port   = 3000
+  }
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.front-end.arn
+    container_name   = local.web_container
+    container_port   = 5000
+  }
+
+  network_configuration {
+    assign_public_ip = true
+    subnets          = var.subnets
+
+    security_groups = [
+      var.alb-access.id,
+    ]
+  }
+}
