@@ -20,6 +20,11 @@ locals {
     development = ["172.10.0.0/24", "172.10.28.0/24", "172.10.57.0/24"]
   })
 
+  name_servers = tomap({
+    primary   = "pranab.ns.cloudflare.com",
+    secondary = "val.ns.cloudflare.com"
+  })
+
   settings = tomap({
     default = jsonencode({
       state = {
