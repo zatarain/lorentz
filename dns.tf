@@ -35,9 +35,11 @@ resource "aws_route53_record" "kingdom" {
   provider = aws.root
   zone_id  = data.aws_route53_zone.realm[each.value].zone_id
   name     = each.value
-  type     = "NS"
-  ttl      = 172800
-  records  = aws_route53_zone.kingdom[each.value].name_servers
+  type     = "CNAME"
+  ttl      = 300
+  records = [
+    "utz-gaussian-bsd.duckdns.org"
+  ]
 }
 
 locals {
