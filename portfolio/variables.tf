@@ -9,11 +9,13 @@ variable "prefix" {
 }
 
 variable "zone_id" {
-  type = string
+  type    = string
+  default = "value"
 }
 
 variable "domain" {
-  type = string
+  type    = string
+  default = "value"
 }
 
 variable "network" {
@@ -55,6 +57,10 @@ variable "certificate" {
   type = object({
     arn = string
   })
+
+  default = {
+    arn = "value"
+  }
 }
 
 variable "load-balancer" {
