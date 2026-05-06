@@ -48,6 +48,7 @@ jobs:
       TF_VAR_aws_root_id: ${{ secrets.TF_VAR_AWS_ROOT_ID }}
       TF_VAR_aws_env_id: ${{ secrets.TF_VAR_AWS_ENV_ID }}
       TF_VAR_database_username: ${{ secrets.DATABASE_USERNAME }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
     - uses: actions/checkout@v4
       with:
