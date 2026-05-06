@@ -10,6 +10,6 @@ variable "vpc" {
 
   default = {
     vpc_id          = "value"
-    private_subnets = [ ]
+    private_subnets = []
   }
 }

@@ -9,11 +9,13 @@ variable "prefix" {
 }
 
 variable "zone_id" {
-  type = string
+  type    = string
+  default = "value"
 }
 
 variable "domain" {
-  type = string
+  type    = string
+  default = "value"
 }
 
 variable "network" {

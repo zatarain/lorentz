@@ -19,8 +19,8 @@ module "my-portfolio" {
   source   = "./portfolio"
   name     = "curriculum-vitae"
   prefix   = "cv"
-  zone_id  = local.kingdom.zone_id
-  domain   = local.kingdom.name
+  # zone_id  = local.kingdom.zone_id
+  # domain   = local.kingdom.name
   # network  = data.aws_vpc.network
   # subnets  = aws_subnet.deployment.*.id
   # postgres = {
