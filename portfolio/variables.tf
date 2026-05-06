@@ -55,6 +55,10 @@ variable "certificate" {
   type = object({
     arn = string
   })
+
+  default = {
+    arn = "value"
+  }
 }
 
 variable "load-balancer" {

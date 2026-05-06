@@ -6,7 +6,7 @@ module "cluster" {
   source   = "./cluster"
   for_each = toset(local.configuration.sdlc.environments)
   name     = local.cluster_name
-  vpc      = module.vpc[each.value]
+  # vpc      = module.vpc[each.value]
 
   providers = {
     aws      = aws
@@ -27,7 +27,7 @@ module "my-portfolio" {
   #   username = var.database_username
   # }
 
-  certificate = aws_acm_certificate.entry-point[local.kingdom.name]
+  # certificate = aws_acm_certificate.entry-point[local.kingdom.name]
   # load-balancer      = aws_alb.entry-point[each.value]
   # secure-entry-point = aws_alb_listener.secure-entry-point[each.value]
   # alb-access         = aws_security_group.alb-access[each.value]

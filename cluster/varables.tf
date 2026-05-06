@@ -7,4 +7,9 @@ variable "vpc" {
     vpc_id          = string
     private_subnets = list(string)
   })
+
+  default = {
+    vpc_id          = "value"
+    private_subnets = [ ]
+  }
 }
